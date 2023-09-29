@@ -1,125 +1,134 @@
 from tkinter import*
 
-def etiqueta_y_cuadro_de_texto(variablesL, variablesCT, frame_nueva_cuenta, lienzo_nueva_cuenta, texto, corX, corY):
-    #Etiqueta
-    variablesL=Label(frame_nueva_cuenta, text=texto)
-    variablesL.pack()
-    variablesL=lienzo_nueva_cuenta.create_window(corX, corY, anchor=NW, window=variablesL)
-    
-    
-    #Campo de texto
-    variablesCT=Entry(frame_nueva_cuenta, textvariable=variablesCT)
-    variablesCT.pack()
-    variablesCT=lienzo_nueva_cuenta.create_window(corX+200, corY, anchor=NW, window=variablesCT)
-    
-def pin(passwordL, passwordCT, frame_nueva_cuenta, lienzo_nueva_cuenta, texto, corX, corY):
-    #Etiqueta
-    passwordL=Label(frame_nueva_cuenta, text=texto)
-    passwordL.pack()
-    passwordL=lienzo_nueva_cuenta.create_window(corX, corY, anchor=NW, window=passwordL)
-    
-    #Campo de texto
-    passwordCT=Entry(frame_nueva_cuenta, show="*", textvariable=passwordCT)
-    passwordCT.pack()
-    passwordCT=lienzo_nueva_cuenta.create_window(corX+200, corY, anchor=NW, window=passwordCT)
-    
 
-def nueva_cuenta(numero_de_casa_ganadora, imagen, frame_nueva_cuenta):
-    global nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion, clavepass_entry
-    #fondo del frame
-    lienzo_nueva_cuenta = Canvas(frame_nueva_cuenta, width=2160, height=2160)
+def nueva_cuenta(numero_de_casa_ganadora, frame_nueva_cuenta, imagen, nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
+    cortx = 400
+    cory = 100
+    
+    
+    #Lienzo
+    lienzo_nueva_cuenta = Canvas(frame_nueva_cuenta, width = 2160, height = 2160)
     lienzo_nueva_cuenta.pack()
-    lienzo_nueva_cuenta.create_image(0, 0, anchor=NW, image=imagen)
+    lienzo_nueva_cuenta.create_image(0, 0, anchor=NW, image = imagen)
     
-    #Variables globales para Etiquetas
-    solicitud_nombre=StringVar
-    solicitud_apellido=StringVar
-    solicitud_correo=StringVar
-    solicitud_username=StringVar 
-    solicitud_dpi=StringVar 
-    solicitud_telefono=StringVar
-    solicitud_fecha=StringVar
-    solicitud_password=StringVar
-    solicitud_confirmacion=StringVar
-    solicitur_clavepass=StringVar
-
-    #Variables globales para Entry
-    nombre=StringVar()
-    apellido=StringVar() 
-    correo=StringVar()
-    username=StringVar() 
-    dpi=StringVar() 
-    telefono=StringVar()
-    fecha=StringVar()
-    password=StringVar()
-    confirmacion=StringVar()
-    clavepass_entry=StringVar()
     
-    print("Primer print")
-    print(clavepass_entry.get())
-    print(nombre.get())
-    print(apellido.get())
-    print(correo.get())
-    print(username.get())
-    print(dpi.get())
-    print(telefono.get())
-    print(fecha.get())
-    print(password.get())
-    print(confirmacion.get())
-    # Asigna valores inic.geiales vacíos a las StringVar
-    # nombre.set("")
-    # apellido.set("")
-    # correo.set("")
-    # username.set("")
-    # dpi.set("")
-    # telefono.set("")
-    # fecha.set("")
-    # password.set("")
-    # confirmacion.set("")
-    
-    print("Segundo print")
-    print(clavepass_entry.get())
-    print(nombre.get())
-    print(apellido.get())
-    print(correo.get())
-    print(username.get())
-    print(dpi.get())
-    print(telefono.get())
-    print(fecha.get())
-    print(password.get())
-    print(confirmacion.get())
-    
-        
-    
-    etiqueta_y_cuadro_de_texto(solicitud_nombre, nombre, frame_nueva_cuenta, lienzo_nueva_cuenta, "Name: ", 400, 0)
-    etiqueta_y_cuadro_de_texto(solicitud_apellido, apellido, frame_nueva_cuenta, lienzo_nueva_cuenta, "Apellido: ", 400, 50)
-    etiqueta_y_cuadro_de_texto(solicitud_correo, correo, frame_nueva_cuenta, lienzo_nueva_cuenta, "Direccion de correo electronico: ", 400, 100)
-    etiqueta_y_cuadro_de_texto(solicitud_username, username, frame_nueva_cuenta, lienzo_nueva_cuenta, "Nombre de usuario: ", 400, 150)
-    etiqueta_y_cuadro_de_texto(solicitud_dpi, dpi, frame_nueva_cuenta, lienzo_nueva_cuenta, "DPI: ", 400, 200)
-    etiqueta_y_cuadro_de_texto(solicitud_telefono, telefono, frame_nueva_cuenta, lienzo_nueva_cuenta, "Telefono: ", 400, 250)
-    etiqueta_y_cuadro_de_texto(solicitud_fecha, fecha, frame_nueva_cuenta, lienzo_nueva_cuenta, "Ingrese fecha(dd/mm/aa): ", 400, 300)
-    #pin(solicitud_password, password, frame_nueva_cuenta, lienzo_nueva_cuenta, "password: ", 400, 350)
-    #pin(solicitud_confirmacion, confirmacion,  frame_nueva_cuenta, lienzo_nueva_cuenta, "Confirmacion de password: ", 400, 400)
+    #Nombre:
     #Etiqueta
-    clavepass=Label(frame_nueva_cuenta, text="Clave")
-    clavepass.pack()
-    clavepass=lienzo_nueva_cuenta.create_window(400, 400, anchor=NW, window=clavepass)
+    etiqueta1 = Label(frame_nueva_cuenta, text="Ingrese su nombre: ")
+    etiqueta1.pack()
+    etiqueta1 = lienzo_nueva_cuenta.create_window(cortx, cory, anchor = NW, window = etiqueta1)
+    
     
     #Campo de texto
-    clavepass_entry=Entry(frame_nueva_cuenta, show="X", textvariable=clavepass_entry)
-    clavepass_entry.pack()
-    clavepass_entry=lienzo_nueva_cuenta.create_window(600, 400, anchor=NW, window=clavepass_entry)
+    entrada1 = Entry(frame_nueva_cuenta, textvariable = nombre)
+    entrada1.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory, anchor = NW, window = entrada1)
     
     
+    #Apellido:
+    #Etiqueta
+    etiqueta2=Label(frame_nueva_cuenta, text="Ingrese su apellido: ")
+    etiqueta2.pack()
+    etiqueta2=lienzo_nueva_cuenta.create_window(cortx, cory+50, anchor = NW, window = etiqueta2)
+    
+    #Campo de texto
+    entrada2 = Entry(frame_nueva_cuenta, textvariable = apellido)
+    entrada2.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+50, anchor = NW, window = entrada2)
     
     
+    #DPI:
+    #Etiqueta
+    etiqueta3 = Label(frame_nueva_cuenta, text = "Ingrese su dpi: ")
+    etiqueta3.pack()
+    etiqueta3 = lienzo_nueva_cuenta.create_window(cortx, cory+100, anchor = NW, window = etiqueta3)
+    
+    #Campo de texto
+    entrada3=Entry(frame_nueva_cuenta, textvariable = dpi)
+    entrada3.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+100, anchor = NW, window = entrada3)
+    
+    
+    #Fecha de nacimiento:
+    #Etiqueta
+    etiqueta4 = Label(frame_nueva_cuenta, text = "Ingrese la fecha de su nacimiento: ")
+    etiqueta4.pack()
+    etiqueta4 = lienzo_nueva_cuenta.create_window(cortx, cory+150, anchor = NW, window = etiqueta4)
+        
+    #Campo de texto
+    entrada4 = Entry(frame_nueva_cuenta, textvariable = fecha)
+    entrada4.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+150, anchor = NW, window = entrada4)
+    
+    
+    #Telefono:
+    #Etiqueta
+    etiqueta5 = Label(frame_nueva_cuenta, text = "Ingrese su telefono: ")
+    etiqueta5.pack()
+    etiqueta5 = lienzo_nueva_cuenta.create_window(cortx, cory+200, anchor = NW, window = etiqueta5)
+        
+    #Campo de texto
+    entrada5 = Entry(frame_nueva_cuenta, textvariable = telefono)
+    entrada5.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+200, anchor = NW, window = entrada5)
+    
+    
+    #Nombre de usuario: 
+    #Etiqueta
+    etiqueta6 = Label(frame_nueva_cuenta, text = "Ingrese su nombre de usuario: ")
+    etiqueta6.pack()
+    etiqueta6 = lienzo_nueva_cuenta.create_window(cortx, cory+250, anchor = NW, window = etiqueta6)
+        
+    #Campo de texto
+    entrada6 = Entry(frame_nueva_cuenta, textvariable = username)
+    entrada6.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+250, anchor = NW, window = entrada6)
+    
+    
+    #Direccion de correo:
+    #Etiqueta
+    etiqueta7 = Label(frame_nueva_cuenta, text="Ingrese su direccion de correo: ")
+    etiqueta7.pack()
+    etiqueta7 = lienzo_nueva_cuenta.create_window(cortx, cory+300, anchor = NW, window = etiqueta7)
+        
+    #Campo de texto
+    entrada7 = Entry(frame_nueva_cuenta, textvariable = correo)
+    entrada7.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+300, anchor = NW, window = entrada7)
+    
+    
+    #Contraseña:
+    #Etiqueta
+    etiqueta8 = Label(frame_nueva_cuenta, text="Ingrese su contraseña: ")
+    etiqueta8.pack()
+    etiqueta8 = lienzo_nueva_cuenta.create_window(cortx, cory+350, anchor = NW, window = etiqueta8)
+        
+    #Campo de texto
+    entrada8 = Entry(frame_nueva_cuenta, textvariable = password, show = "*")
+    entrada8.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+350, anchor = NW, window = entrada8)
+    
+    
+    #Confirmacion:
+    #Etiqueta
+    etiqueta9 = Label(frame_nueva_cuenta, text="Reafirme su password: ")
+    etiqueta9.pack()
+    etiqueta9 = lienzo_nueva_cuenta.create_window(cortx, cory+400, anchor = NW, window = etiqueta9)
+        
+    #Campo de texto
+    entrada9 = Entry(frame_nueva_cuenta, textvariable = confirmacion, show = "*")
+    entrada9.pack()
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+400, anchor = NW, window = entrada9)
+    
+    
+    #fondo del frame
     lista_recibida = [nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion]
     return lista_recibida
     
     
 def recibir_datos_de_crear_cuenta (lista_de_recepcion):
-    lista_recibida = []  
+    lista_recibida = []
     for elemento in lista_de_recepcion:
         valor = elemento.get()
-        lista_recibida.append(valor)
+        lista_recibida.append(valor)  # No necesitas .get() aquí
     print(lista_recibida)

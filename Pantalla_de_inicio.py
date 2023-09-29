@@ -12,8 +12,8 @@ def administracion():
 def seleccionar_escuela(escuela):
     print(escuela)
 
-def boton_enviar_cuenta(casa, imagen, frame_nueva_cuenta):
-    lista_de_recepcion=nueva_cuenta(casa, imagen, frame_nueva_cuenta)
+def boton_enviar_cuenta(casa, imagen, frame_nueva_cuenta,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
+    lista_de_recepcion=nueva_cuenta(casa, frame_nueva_cuenta, imagen,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion)
     recibir_datos_de_crear_cuenta(lista_de_recepcion)
         
 
@@ -24,8 +24,30 @@ def Btn_enviar(lista, frame1, imagen, raiz):
     frame_nueva_cuenta = Frame(raiz)   #Crea el frame para la pantalla de la nueva cuenta
     frame_nueva_cuenta.pack()
     print(casa)
-    lista_de_recepcion_de_datos=nueva_cuenta(casa, imagen, frame_nueva_cuenta)
-    botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: boton_enviar_cuenta(casa, imagen, frame_nueva_cuenta), width=10, height=5) #Coloca el boton para enviar los datos
+    nombre=StringVar()
+    apellido=StringVar() 
+    correo=StringVar()
+    username=StringVar() 
+    dpi=StringVar() 
+    telefono=StringVar()
+    fecha=StringVar()
+    password=StringVar()
+    confirmacion=StringVar()
+    
+    # Asigna valores inic.geiales vacíos a las StringVar
+    nombre.set("Ingrese su nombre: ")
+    apellido.set("Ingrese su apellido: ")
+    correo.set("Ingrese su correo electronico: ")
+    username.set("Ingrese su username: ")
+    dpi.set("Ingrese su dpi: ")
+    telefono.set("Ingrese su numero telefonico: ")
+    fecha.set("Ingrese su fecha de nacimiento: ")
+    password.set("")
+    confirmacion.set("")
+    
+    
+    lista_de_recepcion_de_datos=nueva_cuenta(casa, frame_nueva_cuenta, imagen, nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion)
+    botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: boton_enviar_cuenta(casa, imagen, frame_nueva_cuenta,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion), width=10, height=5) #Coloca el boton para enviar los datos
     botonEnvD.place(x=1278, y=0)
     botonEnvD.lift()
     
