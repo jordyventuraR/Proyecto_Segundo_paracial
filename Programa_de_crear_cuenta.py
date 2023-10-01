@@ -2,8 +2,6 @@ from tkinter import*
 import re
 import datetime
 
-
-
 def nueva_cuenta(numero_de_casa_ganadora, frame_nueva_cuenta, imagen, nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
     #Posicion de los widgets en la pantalla
     cortx = 400
@@ -127,16 +125,17 @@ def nueva_cuenta(numero_de_casa_ganadora, frame_nueva_cuenta, imagen, nombre, ap
     
     #fondo del frame
     lista_recibida = [nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion]
-    return lista_recibida
+    return lista_recibida, lienzo_nueva_cuenta
     
 
 #Funcion que imprime los datos que se escribieron en el campo de texto   
-def recibir_datos_de_crear_cuenta (lista_de_recepcion):
-    lista_recibida = []
+def recibir_datos_de_crear_cuenta (lista_de_recepcion, lienzo_nueva_cuenta, frame_nueva_cuenta, cortx, cory, imagen):
+    syntaxis_correcta = []       #Lista para enviar verificacion True o False      
+    lista_recibida = []          #En esta lista se almacena los datos que se van a enviar ya se las alarmas o los datos escritos
+    lista_de_verificacion1 = []
     for elemento in lista_de_recepcion:
         valor = elemento.get()
         lista_recibida.append(valor)  # No necesitas .get() aquí
-    print(lista_recibida)
     
     #Verificacion de los datos
     ver_nombre = lista_recibida[0]
@@ -148,89 +147,130 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion):
     ver_password = lista_recibida[7]
     ver_confirmacion = lista_recibida[8]
     
-    
-    print(ver_nombre)
-    print(ver_apellido)
-    print(ver_correo)
-    print(ver_DPI)
-    print(ver_telefono)
-    print(ver_fecha)
-    print(ver_password)
-    print(ver_confirmacion)
-    
     #Nombre
     if ver_nombre.isalpha():
-        print("El nombre contiene solo letras.")
+        check = True
+        lista_recibida.append(ver_nombre)
+        syntaxis_correcta.append(check)
     else:
-        print("El nombre contiene otro tipo de datos.")
-    
+        #Etiqueta
+        check = False
+        ver_nombre =  "El nombre contiene otro tipo de datos. "
+        lista_recibida.append(ver_nombre)
+        syntaxis_correcta.append(check)
+        
     #Apellido
     if ver_apellido.isalpha():
-        print("El apellido contiene solo letras")
+        check = True
+        lista_recibida.append(ver_apellido)
+        syntaxis_correcta.append(check)
+        
     else:
-        print("El apellido contiene otro tipo de letras")
+        #Etiqueta
+        check = True
+        ver_apellido =  "El apellido contiene otro tipo de letras"
+        lista_recibida.append(ver_apellido)
+        syntaxis_correcta.append(check)
+        
         
     #DPI
     cantidad_diguitos_dpi = len(ver_DPI)
     if cantidad_diguitos_dpi == 13:
         if ver_DPI.isdigit():
-            print("Si puede ser un numero de DPI")
+            check = True
+            lista_recibida.append(ver_DPI)
+            syntaxis_correcta.append(check)
         else:
-            print("Faltan diguitos de un numero de DPI")
+            check = False
+            ver_DPI = "Faltan diguitos de un numero de DPI"
+            lista_recibida.append(ver_DPI)
+            syntaxis_correcta.append(check)
+            
     else:
-        print("No puede ser un numero de DPI")
-    
+        check = False
+        ver_DPI = "No puede ser un numero de DPI"
+        lista_recibida.append(ver_DPI)
+        syntaxis_correcta.append(check)
         
-
+    
     # Telefono
     cantidad_digitos_tel = len(ver_telefono)
     if cantidad_digitos_tel == 8:
         if ver_telefono.isdigit():
-            print("Si puede ser un numero telefonico")
+            #Etiqueta
+            check = True
+            lista_recibida.append(ver_telefono)
+            syntaxis_correcta.append(check)
+            
         else:
-            print("No es un numero telefonico valido")
+            #Etiqueta
+            check = False
+            ver_telefono = "No es un numero telefonico valido"
+            lista_recibida.append(ver_telefono)
+            syntaxis_correcta.append(check)
     else:
-        print("No tiene 8 digitos")
-        print(cantidad_digitos_tel)
+        #Etiqueta
+        check = False
+        ver_telefono = "No tiene 8 digitos"
+        lista_recibida.append(ver_telefono)
+        syntaxis_correcta.append(check)
+    
         
     #Direccion de correo
     # Patrón de expresión regular para validar un correo de Gmail
     patron = r'^[a-zA-Z0-9._%+-]+@gmail\.com$'
-
     #Usar re.match() para comprobar si el correo coincide con el patrón
     if re.match(patron, ver_correo):
-        print("Correo es valido")
-    else:
-        print("Correo invalido")
+        check = True
+        lista_recibida.append(ver_correo)
+        syntaxis_correcta.append(check)
         
+    else:
+        check = False
+        ver_correo = "Correo invalido"
+        lista_recibida.append(ver_correo)
+        syntaxis_correcta.append(check)
+        
+
     #Fecha de nacimiento
-        # Dividir la cadena en partes usando '/' como separador
+    # Dividir la cadena en partes usando '/' como separador
     partes = ver_fecha.split('/')  
     #Verificar si hay exactamente 3 partes y si las partes 0, 1 y 2 son dígitos
     if len(partes) == 3 and partes[0].isdigit() and partes[1].isdigit() and partes[2].isdigit():
         #Verificar que las partes 0, 1 y 2 tengan longitudes válidas (2, 2, y 4 caracteres respectivamente)
         if len(partes[0]) in [1, 2] and len(partes[1]) in [1, 2] and len(partes[2]) == 4:
-            print("formato de  fecha valida")
-        else:
-            print("formato de  fecha invalida")
-    else: 
-        print("formato de fecha Invalida")
+            
+            #!Verificacion
+            now = datetime.datetime.now()
+            year_actual = now.strftime("%Y")
+            year_nacimiento = partes[2]
+            year_actual_int = int(year_actual)
+            year_nacimiento_int = int(year_nacimiento)
+            edad = year_actual_int - year_nacimiento_int
         
-    now = datetime.datetime.now()
-    year_actual = now.strftime("%Y")
-    year_nacimiento = partes[2]
-    year_actual_int = int(year_actual)
-    year_nacimiento_int = int(year_nacimiento)
-    edad = year_actual_int - year_nacimiento_int
-    print("Year actual: " + str(year_actual_int))
-    print("year nacimiento: " + str(year_nacimiento_int))
-    print("edad: " + str(edad))
-    
 
-    if 11 <= edad <= 18:
-        print("Tiene la edad suficiente")
+            if 11 <= edad <= 18:
+                check = True
+                lista_recibida.append(ver_fecha)
+                syntaxis_correcta.append(check)
+                
+            else:
+                check = False
+                ver_fecha = "No tiene la edad suficiente"
+                lista_recibida.append(ver_fecha)
+                syntaxis_correcta.append(check)
+            
+        else:
+            check = False
+            ver_fecha = "formato de  fecha invalida"
+            lista_recibida.append(ver_fecha)
+            syntaxis_correcta.append(check)
+            
     else:
-        print("No tiene la edad suficiente")
+        check = False
+        ver_fecha = "formato de  fecha invalida"
+        lista_recibida.append(ver_fecha)
+        syntaxis_correcta.append(check)
     
     
     # #Contraseña
@@ -252,18 +292,36 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion):
             if posicion in caracteres_especiales:
                 car_letras_especiales += 1
         if carnumero >= 1 and carletramayuscula >= 1 and carletraminuscula >= 1 and car_letras_especiales >= 1:
-            print("Clave valida")
+            check = True
+            lista_recibida.append(ver_password)
+            syntaxis_correcta.append(check)
             
         else:
-            print("La clave no es valida debe de usar numeros, letras mayusculas, minusculas, y simbolos especiales como: !#%...")
+            check = False
+            ver_password = "La clave no es valida debe de usar numeros, letras mayusculas, minusculas, y simbolos especiales como: !#%..."
+            lista_recibida.append(ver_password)
+            syntaxis_correcta.append(check)
+            
                 
         #Confirmacion
         if ver_password == ver_confirmacion:
-            print("La verificacion es la misma que el password")
+            check = True
+            lista_recibida.append(ver_confirmacion)
+            syntaxis_correcta.append(check)
+            
         else:
-            print("La confirmacion no es igual que el password")
+            check = False
+            ver_confirmacion = "La confirmacion no es igual que el password"
+            lista_recibida.append(ver_confirmacion)
+            syntaxis_correcta.append(check)
+            
+            
     else:
-        print("Cantidad de diguitos insuficientes")
+        check = False
+        ver_confirmacion = "Cantidad de diguitos insuficientes"
+        lista_recibida.append(ver_confirmacion)
+        syntaxis_correcta.append(check)
     
+    return lista_recibida, syntaxis_correcta 
     
     

@@ -2,6 +2,7 @@
 from tkinter import*
 from  Preguntas import cuestionario, enviar
 from Programa_de_crear_cuenta import nueva_cuenta, recibir_datos_de_crear_cuenta
+from Alertas_cuenta_python import mensajes
 
 
 #Botones
@@ -13,9 +14,9 @@ def seleccionar_escuela(escuela):
     print(escuela)
 
 def boton_enviar_cuenta(casa, imagen, frame_nueva_cuenta,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
-    lista_de_recepcion=nueva_cuenta(casa, frame_nueva_cuenta, imagen,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion)
-    recibir_datos_de_crear_cuenta(lista_de_recepcion)
-        
+    lista_de_recepcion, lienzo = nueva_cuenta(casa, frame_nueva_cuenta, imagen,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion)
+    lista_recibida, syntaxis_correcta = recibir_datos_de_crear_cuenta(lista_de_recepcion, lienzo, frame_nueva_cuenta, 400, 100, imagen)
+    mensajes(lista_recibida, syntaxis_correcta, frame_nueva_cuenta, lienzo)
 
 
 #Envia a la pantalla de registro de cuentas
@@ -46,11 +47,11 @@ def Btn_enviar(lista, frame1, imagen, raiz):
     confirmacion.set("")
     
     
-    lista_de_recepcion_de_datos=nueva_cuenta(casa, frame_nueva_cuenta, imagen, nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion)
+    lista_de_recepcion_de_datos, lienzo = nueva_cuenta(casa, frame_nueva_cuenta, imagen, nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion)
     botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: boton_enviar_cuenta(casa, imagen, frame_nueva_cuenta,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion), width=10, height=5) #Coloca el boton para enviar los datos
     botonEnvD.place(x=1278, y=0)
     botonEnvD.lift()
-    
+    #mensajes(frame_nueva_cuenta)
     
 #La pantalla principal
 def regresar(raiz, frame_cuestionario):
