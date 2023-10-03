@@ -18,3 +18,9 @@ def mensajes(frame_nueva_cuenta, lienzo_nueva_cuenta, lista_recibida, syntaxis_c
         enviar_error = False
         return enviar_error
     
+def mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, mensaje_de_error, corx, cory):
+    etiquetA1 = Label(frame_nueva_cuenta, text = mensaje_de_error)
+    etiquetA1.pack()
+    etiquetA1 = lienzo_nueva_cuenta.create_window(corx, cory, anchor = NW, window = etiquetA1)
+    
+    

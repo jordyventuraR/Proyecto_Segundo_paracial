@@ -1,9 +1,14 @@
 #La pantalla principal la seleccion de escuela 
+#Librerias nativas
 from tkinter import*
+
+#Carga de modulos propios de python
 from  Preguntas import cuestionario, enviar
 from Programa_de_crear_cuenta import nueva_cuenta, recibir_datos_de_crear_cuenta
-from Alertas_cuenta_python import mensajes
-import time
+from Alertas_cuenta_python import mensajes, mensajes_validacion_2
+from almacenado_datos import alamacenamiento
+from Enviar_correo import confirmacion_new
+from Busqueda_datos import*
 
 
 #Botones
@@ -14,7 +19,32 @@ def administracion():
 def seleccionar_escuela(escuela):
     print(escuela)
     
+def validacion2(frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz):
+    if validacion2_DPI(primera_validacion[2]) == True:
+        if validacion2_username(primera_validacion[5]) == True:
+            if validacion2_telefono(primera_validacion[4]) == True:
+                if validacion2_correo(primera_validacion[6]) == True:
+                    if alamacenamiento() == True:
+                        if confirmacion_new == True:
+                            regresar(raiz, frame_nueva_cuenta)
+                        else:
+                            print("No se pudo enviar el correo")
+                    else:
+                        print("No se pudo guardar los datos")
+                else:
+                    mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El correo ya existe en el sistema", 800, 400)
+                    return False
+            else:
+                mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El numero de celular ya existe en el sistema", 800, 300)
+                return False
+        else:
+            mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El username ya existe en el sistema", 800, 350)
+            return False
+    else:
+        mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El DPI ya existe en el sistema", 800, 200)
+        return False
     
+        
 def boton_enviar_cuenta(casa, imagen, lienzo_nueva_cuenta, frame_nueva_cuenta, lista, raiz,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
     enviar_error = False
     lista_de_recepcion = nueva_cuenta(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, imagen,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion)
@@ -25,10 +55,10 @@ def boton_enviar_cuenta(casa, imagen, lienzo_nueva_cuenta, frame_nueva_cuenta, l
         botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: Btn_enviar(lista, frame_nueva_cuenta, imagen, raiz), width=10, height=5)
         botonEnvD.place(x=1278, y=0)
         botonEnvD.lift()
-    else:
-        print("Aqui se envia a C")
-    
-
+    else: 
+        botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: validacion2(frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz), width=10, height=5)
+        botonEnvD.place(x=1278, y=0)
+        botonEnvD.lift()
 
 #Envia a la pantalla de registro de cuentas
 def Btn_enviar(lista, frame1, imagen, raiz):
