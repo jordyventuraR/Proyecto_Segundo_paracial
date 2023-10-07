@@ -3,7 +3,7 @@ import re
 import datetime
 
 def nueva_cuenta(numero_de_casa_ganadora, frame_nueva_cuenta, lienzo_nueva_cuenta, imagen, nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
-    #Posicion de los widgets en la pantalla
+    #Posicion de los widgets en la pantalla(X, Y y la posicion va dependiendo de la etiqueta y el campo de texto)
     cortx = 400
     cory = 100
     
@@ -124,14 +124,15 @@ def nueva_cuenta(numero_de_casa_ganadora, frame_nueva_cuenta, lienzo_nueva_cuent
 
 #Funcion que imprime los datos que se escribieron en el campo de texto   
 def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx, cory, imagen):
-    syntaxis_correcta = []       #Lista para enviar verificacion True o False      
-    lista_recibida = [] 
-    primera_validacion = [] #En esta lista se almacena los datos que se van a enviar ya se las alarmas o los datos escritos
-    for elemento in lista_de_recepcion:
+    syntaxis_correcta = []      #Lista para enviar verificacion True o False      
+    lista_recibida = []         #Lista donde se van almacenar las entradas de texto
+    primera_validacion = []     #En esta lista se almacena los datos que se van a enviar ya sea las alarmas o los datos escritos
+    #Obtiene el valor en string de cada datos
+    for elemento in lista_de_recepcion: 
         valor = elemento.get()
-        lista_recibida.append(valor)  # No necesitas .get() aquí
+        lista_recibida.append(valor)
     
-    #Verificacion de los datos
+    #Guarda cada iteracion en una variable
     ver_nombre = lista_recibida[0]
     ver_apellido = lista_recibida[1]
     ver_correo = lista_recibida[2]
@@ -143,7 +144,7 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
     ver_confirmacion = lista_recibida[8]
     
     #Nombre
-    if ver_nombre.isalpha():
+    if ver_nombre.isalpha():                    #Si el nombre es totla mente texto
         check = True
         primera_validacion.append(ver_nombre)
         syntaxis_correcta.append(check)
@@ -151,8 +152,8 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         #Etiqueta
         check = False
         ver_nombre =  "El nombre contiene otro tipo de datos. "
-        primera_validacion.append(ver_nombre)
-        syntaxis_correcta.append(check)
+        primera_validacion.append(ver_nombre)     #Guarda la variable con la correccion
+        syntaxis_correcta.append(check)           #Guarda el estado de false
         
     #Apellido
     if ver_apellido.isalpha():
@@ -169,21 +170,21 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         
         
     #DPI
-    cantidad_diguitos_dpi = len(ver_DPI)
-    if cantidad_diguitos_dpi == 13:
-        if ver_DPI.isdigit():
-            check = True
-            primera_validacion.append(ver_DPI)
+    cantidad_diguitos_dpi = len(ver_DPI)        #obtiene la longitud de caracteres
+    if cantidad_diguitos_dpi == 13:             #Si tiene 13 diguitos
+        if ver_DPI.isdigit():                   #Si solo son numeros
+            check = True                        #Correcto
+            primera_validacion.append(ver_DPI)  
             syntaxis_correcta.append(check)
-        else:
-            check = False
+        else:                                               #Error por no tener el numero correcto de diguitos
+            check = False                                   
             ver_DPI = "Faltan diguitos de un numero de DPI"
             primera_validacion.append(ver_DPI)
             syntaxis_correcta.append(check)
             
     else:
         check = False
-        ver_DPI = "No puede ser un numero de DPI"
+        ver_DPI = "No puede ser un numero de DPI"              #Posee datos no numericos
         primera_validacion.append(ver_DPI)
         syntaxis_correcta.append(check)
     
@@ -197,31 +198,35 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         if len(partes[0]) in [1, 2] and len(partes[1]) in [1, 2] and len(partes[2]) == 4:
             
             #!Verificacion
-            now = datetime.datetime.now()
-            year_actual = now.strftime("%Y")
-            year_nacimiento = partes[2]
-            year_actual_int = int(year_actual)
-            year_nacimiento_int = int(year_nacimiento)
-            edad = year_actual_int - year_nacimiento_int
+            now = datetime.datetime.now()                 #Obtiene la fecha actual
+            year_actual = now.strftime("%Y")              #Obtiene el año actual
+            year_nacimiento = partes[2]                   #Guarda el año de la fecha de nacimiento
+            year_actual_int = int(year_actual)            #Pasa el año a enteros
+            year_nacimiento_int = int(year_nacimiento)    #Pasa el año de nacimiento a enteros
+            edad = year_actual_int - year_nacimiento_int  #Obtiene la edad
         
 
+            #La edad valida para registrarse es de 11 a 18 años
             if 11 <= edad <= 18:
                 check = True
                 primera_validacion.append(ver_fecha)
                 syntaxis_correcta.append(check)
-                
+            
+            #No tiene edad suficiente    
             else:
                 check = False
                 ver_fecha = "No tiene la edad suficiente"
                 primera_validacion.append(ver_fecha)
                 syntaxis_correcta.append(check)
-            
+                
+        #No tiene adecuadamente el formato de fecha    
         else:
             check = False
             ver_fecha = "formato de  fecha invalida"
             primera_validacion.append(ver_fecha)
             syntaxis_correcta.append(check)
             
+    #El formato de fecha no es valido      
     else:
         check = False
         ver_fecha = "formato de  fecha invalida"
@@ -229,29 +234,29 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         syntaxis_correcta.append(check)
         
     #username
-    check = True
+    check = True            #El username siempre es correcto ya que solo se rebisa la syntaxis
     primera_validacion.append(ver_username)
     syntaxis_correcta.append(check)    
     
     
     # Telefono
-    cantidad_digitos_tel = len(ver_telefono)
-    if cantidad_digitos_tel == 8:
+    cantidad_digitos_tel = len(ver_telefono)        #Obtiene la cantidad de diguitos
+    if cantidad_digitos_tel == 8:                   #Debe de ser igual a 8
         if ver_telefono.isdigit():
             #Etiqueta
-            check = True
+            check = True                             #El numero es correcto
             primera_validacion.append(ver_telefono)
             syntaxis_correcta.append(check)
             
         else:
             #Etiqueta
-            check = False
+            check = False                             #Tiene caracteres no validos
             ver_telefono = "No son numeros"
             primera_validacion.append(ver_telefono)
             syntaxis_correcta.append(check)
     else:
         #Etiqueta
-        check = False
+        check = False                                 #No posee que 8 diguitos
         ver_telefono = "No tiene 8 digitos"
         primera_validacion.append(ver_telefono)
         syntaxis_correcta.append(check)
@@ -259,15 +264,15 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         
     #Direccion de correo
     # Patrón de expresión regular para validar un correo de Gmail
-    patron = r'^[a-zA-Z0-9._%+-]+@gmail\.com$'
-    #Usar re.match() para comprobar si el correo coincide con el patrón
+    patron = r'^[a-zA-Z0-9._%+-]+@gmail\.com$'          #Verifica que lo ingresado sea .@gmail.com
+    
     if re.match(patron, ver_correo):
-        check = True
+        check = True                                    #El correo posee ese formato
         primera_validacion.append(ver_correo)
         syntaxis_correcta.append(check)
         
     else:
-        check = False
+        check = False                                   #No posee ese formato
         ver_correo = "Correo invalido"
         primera_validacion.append(ver_correo)
         syntaxis_correcta.append(check)
@@ -278,11 +283,11 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
     carletramayuscula = 0
     carletraminuscula = 0
     car_letras_especiales = 0
-    caracteres_especiales = ['!', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¿', '[', '*', '{', '}', '/', '+', '-', '.', ',', '.', '-']
-    cantidad_diguitos = len(ver_password)
+    caracteres_especiales = ['!', '#', '$', '%', '&', '/', '(', ')', '=', '?', '¿', '[', '*', '{', '}', '/', '+', '-', '.', ',', '.', '-'] #Simbolos considerados especiales
+    cantidad_diguitos = len(ver_password)       #Obtiene la cantidad de diguitos          
     
-    if cantidad_diguitos >= 8:
-        for posicion in ver_password:                
+    if cantidad_diguitos >= 8:                  #Debe de tener mas de 8 diguitos
+        for posicion in ver_password:                       
             if 48 <= ord(posicion) <= 57:
                 carnumero += 1
             if 'A' <= posicion <= 'Z':
@@ -291,13 +296,13 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
                 carletraminuscula += 1
             if posicion in caracteres_especiales:
                 car_letras_especiales += 1
-        if carnumero >= 1 and carletramayuscula >= 1 and carletraminuscula >= 1 and car_letras_especiales >= 1:
-            check = True
+        if carnumero >= 1 and carletramayuscula >= 1 and carletraminuscula >= 1 and car_letras_especiales >= 1:     #La contraseña debe de poseer como minimo un caracter especial, un caracter en Mayuscula y uno en minuscula
+            check = True                                
             primera_validacion.append(ver_password)
             syntaxis_correcta.append(check)
             
             #Confirmacion
-            if ver_password == ver_confirmacion:
+            if ver_password == ver_confirmacion:                #Si la confirmacion  es igual a la contraseña
                 check = True
                 primera_validacion.append(ver_confirmacion)
                 syntaxis_correcta.append(check)

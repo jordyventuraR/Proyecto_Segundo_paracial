@@ -1,19 +1,20 @@
 #Programa para la busqueda de datos
 def validacion2_DPI(numero_busqueda):
-    busqueda_DPI = []
-    print("Validacion 2 de DPI")
+    busqueda_DPI = []   #Lista donde se va a guardar cada linea del documento como una posicion
     try:
         with open('Almacenado_DPI.txt', 'r') as fp:
             busqueda_DPI = fp.readlines()
-            if numero_busqueda in busqueda_DPI:
-                resultado_DPI = True
+            if numero_busqueda in busqueda_DPI:     #Busca si el numero existe en el documento
+                resultado_DPI = True                #El numero da error por no ser unico
             else:
-                resultado_DPI = False
+                resultado_DPI = False               #El numero es unico
+    #Erroe al abrir el archibo
     except FileNotFoundError:
         print("No se pudo leer el archivo")
-        resultado_DPI = False
-    return resultado_DPI
+        resultado_DPI = True
+    return resultado_DPI                            #Retorna si es unico o no
 
+#Busca si el numero de telefono existe en la base
 def validacion2_telefono(clave_busqueda):
     busqueda_telefono = []
     print("Validacion 2 de telefono")
@@ -29,6 +30,7 @@ def validacion2_telefono(clave_busqueda):
         resultado_telefono = False
     return resultado_telefono
 
+#Busca si el correo es unico
 def validacion2_correo(clave_busqueda):
     busqueda_correo = []
     print("Validacion 2 de correo")
@@ -44,6 +46,7 @@ def validacion2_correo(clave_busqueda):
         resultado_correo = False
     return resultado_correo
 
+#Busca si el username es unico
 def validacion2_username(clave_busqueda):
     busqueda_username = []
     print("Validacion 2 de username")
