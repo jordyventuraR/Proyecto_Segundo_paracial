@@ -20,13 +20,17 @@ def administracion():
 def seleccionar_escuela(escuela):
     print(escuela)
     
-def validacion2(frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz):
+def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz):
     if validacion2_DPI(primera_validacion[2]) == True:                 #Si el DPI es unico
         if validacion2_username(primera_validacion[5]) == True:        #Si el username es unico
             if validacion2_telefono(primera_validacion[4]) == True:    #Si el numero de telefono es unico
                 if validacion2_correo(primera_validacion[6]) == True:  #Si el correo es unico
-                    if alamacenamiento() == True:                      #Si los datos ya fueron almacenados
-                        if confirmacion_new == True:
+                    if alamacenamiento() == True:                      #Si los datos ya fueron almacenados 
+                        correo =  primera_validacion[6]
+                        nombre  =  primera_validacion[0] 
+                        house = str(casa)
+                        envio_correo = confirmacion_new(correo, nombre, house)
+                        if envio_correo == 'OK':                       #Si el correo fue enviado correctamente
                             regresar(raiz, frame_nueva_cuenta)         #Regresa a la pantalla principal
                         else:
                             mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "No se pudo enviar el correo", 800, 500)
@@ -59,7 +63,7 @@ def boton_enviar_cuenta(casa, imagen, lienzo_nueva_cuenta, frame_nueva_cuenta, l
     #Si no hay errores de syntaxis:
     else:
         #Se verifican que sena datos unicos
-        botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: validacion2(frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz), width=10, height=5)
+        botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz), width=10, height=5)
         botonEnvD.place(x=1278, y=0)
         botonEnvD.lift()
 
