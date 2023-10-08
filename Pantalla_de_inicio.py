@@ -26,10 +26,7 @@ def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacio
             if validacion2_telefono(primera_validacion[4]) == True:    #Si el numero de telefono es unico
                 if validacion2_correo(primera_validacion[6]) == True:  #Si el correo es unico
                     if alamacenamiento() == True:                      #Si los datos ya fueron almacenados 
-                        correo =  primera_validacion[6]
-                        nombre  =  primera_validacion[0] 
-                        house = str(casa)
-                        envio_correo = confirmacion_new(correo, nombre, house)
+                        envio_correo = confirmacion_new(primera_validacion[6], primera_validacion[0], casa)
                         if envio_correo == 'OK':                       #Si el correo fue enviado correctamente
                             regresar(raiz, frame_nueva_cuenta)         #Regresa a la pantalla principal
                         else:
@@ -69,7 +66,7 @@ def boton_enviar_cuenta(casa, imagen, lienzo_nueva_cuenta, frame_nueva_cuenta, l
 
 #Envia a la pantalla de registro de cuentas
 def Btn_enviar(lista, frame1, imagen, raiz):
-    casa = enviar(lista, frame1)         #Obtiene el valor de la casa con mas puntaje
+    casa = enviar(lista, frame1)   #Obtiene el valor de la casa con mas puntaje
     
     #Creacion freame y del lienzo
     frame_nueva_cuenta = Frame(raiz)

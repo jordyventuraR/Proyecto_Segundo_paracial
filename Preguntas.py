@@ -27,17 +27,13 @@ def enviar(datos, frame):
     #Suma los puntajes de cada opcion
     for index, value in enumerate(decisiones):
         if value == 1:
-            print("opcion_seleccion: 1 ")
             Gryffindor=1+Gryffindor
         elif value == 2:
-            print("opcion_seleccion: 2 ")
             Hufflepuff=1+Hufflepuff
         elif value == 3:
-            print("opcion_seleccion: 3 ")
             Ravenclaw=1+Ravenclaw
             
         elif value == 4:
-            print("opcion_seleccion: 4 ")
             Slytherin=1+Slytherin
     #crea una lista con un nombre y el valor del puntaje de esa escuela
     cantidad = {Gryffindor: 'Gryfindor', Hufflepuff: 'Hufflepuff', Ravenclaw: 'Ravenclaw', Slytherin: 'Slytherin'}
@@ -45,6 +41,7 @@ def enviar(datos, frame):
     casa_ganadora = max(cantidad, key=cantidad.get)
     #Destruye el frame 
     frame.destroy()
+
     #Devuelve el valor de la lista mas grande al modulo principal donde fue llamada
     return casa_ganadora
     
