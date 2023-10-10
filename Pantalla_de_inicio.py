@@ -8,7 +8,7 @@ from  Preguntas import cuestionario, enviar                                     
 from Programa_de_crear_cuenta import nueva_cuenta, recibir_datos_de_crear_cuenta    #Libreria que crea la pantalla de registros y valida la syntaxis de los datos ingresados
 from Alertas_cuenta_python import mensajes, mensajes_validacion_2                   #Libreria que coloca los errores de manera visual
 from almacenado_datos import alamacenamiento                                        #Libreria que se almacena y se encripta la contraseña
-from Enviar_correo import confirmacion_new                                          #Libreria que envia el correo de confirmacion
+from Enviar_correo import confirmacion_new, correo_adv                              #Libreria que envia el correo de confirmacion
 from Busqueda_datos import*                                                         #Libreria que busca que ciertos datos sean unicos
 
 
@@ -21,12 +21,13 @@ def seleccionar_escuela(escuela):
     print(escuela)
     
 def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz):
-    if validacion2_DPI(primera_validacion[2]) == True:                 #Si el DPI es unico
-        if validacion2_username(primera_validacion[5]) == True:        #Si el username es unico
-            if validacion2_telefono(primera_validacion[4]) == True:    #Si el numero de telefono es unico
-                if validacion2_correo(primera_validacion[6]) == True:  #Si el correo es unico
-                    if alamacenamiento() == True:                      #Si los datos ya fueron almacenados 
-                        envio_correo = confirmacion_new(primera_validacion[6], primera_validacion[0], casa)
+    lista_DPI, lista_nombre_apellido, lista_telefono, lista_correo = generacion_sublistas()
+    if validacion2_DPI(primera_validacion[2], lista_DPI) == False:                 #Si el DPI es unico
+        if  validacion2_identidad(primera_validacion[0], primera_validacion[1], lista_nombre_apellido) == False:       #Si el username es unico
+            if validacion2_telefono(primera_validacion[4], lista_telefono) == False:    #Si el numero de telefono es unico
+                if validacion2_correo(primera_validacion[5], lista_correo) == False:  #Si el correo es unico
+                    if alamacenamiento() == False:                      #Si los datos ya fueron almacenados 
+                        envio_correo = confirmacion_new(primera_validacion[5], primera_validacion[0], casa)
                         if envio_correo == 'OK':                       #Si el correo fue enviado correctamente
                             regresar(raiz, frame_nueva_cuenta)         #Regresa a la pantalla principal
                         else:
@@ -40,12 +41,14 @@ def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacio
                 mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El numero de celular ya existe en el sistema", 800, 300)
                 return False
         else:
-            mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El username ya existe en el sistema", 800, 350)
-            return False
+            mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "Esa identidad ya existe en el sistema", 800, 350)
+            if validacion2_correo(primera_validacion[5], lista_correo) == True:
+                envio_correo2 =  correo_adv(primera_validacion[5], primera_validacion[0])                                 #Si el nombre el apellido y el correo son iguales se le advierte a usuario original
+            else:
+                return False
     else:
         mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El DPI ya existe en el sistema", 800, 200)
         return False
-    
         
 def boton_enviar_cuenta(casa, imagen, lienzo_nueva_cuenta, frame_nueva_cuenta, lista, raiz,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
     lista_de_recepcion = nueva_cuenta(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, imagen,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion) #Obtiene el valor de lo que se escribio actualmente en los campos de textos

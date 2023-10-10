@@ -3,6 +3,16 @@ import re
 import datetime
 
 def nueva_cuenta(numero_de_casa_ganadora, frame_nueva_cuenta, lienzo_nueva_cuenta, imagen, nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
+    """La funcion de la nueva cuenta crea las etiquetas y los campos de texto para el registro con la entrada de: 
+    1) Nombre completo 
+    2) Apellido completo 
+    3) DPI
+    4)Fecha de nacimiento
+    5)Telefono
+    6)Direccion de correo
+    7)Contraseña
+    8)confirmacion
+    Y retorna -> el valor de los campos de texto """
     #Posicion de los widgets en la pantalla(X, Y y la posicion va dependiendo de la etiqueta y el campo de texto)
     cortx = 400
     cory = 100
@@ -69,61 +79,55 @@ def nueva_cuenta(numero_de_casa_ganadora, frame_nueva_cuenta, lienzo_nueva_cuent
     lienzo_nueva_cuenta.create_window(cortx+200, cory+200, anchor = NW, window = entrada5)
     
     
-    #Nombre de usuario: 
-    #Etiqueta
-    etiqueta6 = Label(frame_nueva_cuenta, text = "Ingrese su nombre de usuario: ")
-    etiqueta6.pack()
-    etiqueta6 = lienzo_nueva_cuenta.create_window(cortx, cory+250, anchor = NW, window = etiqueta6)
-        
-    #Campo de texto
-    entrada6 = Entry(frame_nueva_cuenta, textvariable = username)
-    entrada6.pack()
-    lienzo_nueva_cuenta.create_window(cortx+200, cory+250, anchor = NW, window = entrada6)
-    
-    
     #Direccion de correo:
     #Etiqueta
     etiqueta7 = Label(frame_nueva_cuenta, text="Ingrese su direccion de correo: ")
     etiqueta7.pack()
-    etiqueta7 = lienzo_nueva_cuenta.create_window(cortx, cory+300, anchor = NW, window = etiqueta7)
+    etiqueta7 = lienzo_nueva_cuenta.create_window(cortx, cory+250, anchor = NW, window = etiqueta7)
         
     #Campo de texto
     entrada7 = Entry(frame_nueva_cuenta, textvariable = correo)
     entrada7.pack()
-    lienzo_nueva_cuenta.create_window(cortx+200, cory+300, anchor = NW, window = entrada7)
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+250, anchor = NW, window = entrada7)
     
     
     #Contraseña:
     #Etiqueta
     etiqueta8 = Label(frame_nueva_cuenta, text="Ingrese su contraseña: ")
     etiqueta8.pack()
-    etiqueta8 = lienzo_nueva_cuenta.create_window(cortx, cory+350, anchor = NW, window = etiqueta8)
+    etiqueta8 = lienzo_nueva_cuenta.create_window(cortx, cory+300, anchor = NW, window = etiqueta8)
         
     #Campo de texto
     entrada8 = Entry(frame_nueva_cuenta, textvariable = password, show = "*")
     entrada8.pack()
-    lienzo_nueva_cuenta.create_window(cortx+200, cory+350, anchor = NW, window = entrada8)
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+300, anchor = NW, window = entrada8)
     
     
     #Confirmacion:
     #Etiqueta
     etiqueta9 = Label(frame_nueva_cuenta, text="Reafirme su password: ")
     etiqueta9.pack()
-    etiqueta9 = lienzo_nueva_cuenta.create_window(cortx, cory+400, anchor = NW, window = etiqueta9)
+    etiqueta9 = lienzo_nueva_cuenta.create_window(cortx, cory+350, anchor = NW, window = etiqueta9)
         
     #Campo de texto
     entrada9 = Entry(frame_nueva_cuenta, textvariable = confirmacion, show = "*")
     entrada9.pack()
-    lienzo_nueva_cuenta.create_window(cortx+200, cory+400, anchor = NW, window = entrada9)
+    lienzo_nueva_cuenta.create_window(cortx+200, cory+350, anchor = NW, window = entrada9)
     
     
     #fondo del frame
-    lista_recibida = [nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion]
+    lista_recibida = [nombre, apellido, correo, dpi, telefono, fecha, password, confirmacion]
     return lista_recibida
     
 
 #Funcion que imprime los datos que se escribieron en el campo de texto   
 def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx, cory, imagen):
+    """En esta funcion se revisa la syntaxis de las entradas de los datos antes de enviarlos por ejemplo que
+    el nombre solo tenga texto, los argumentos son: Lista de recepcion, frame, posicion X, Posicion Y y la imagen
+    lo retornada por la funcion->: 
+    1) Primera validacion: Guarda el mensaje que se envia como error para las etiquetas  
+    2) syntaxis correcta: Envia True o False y esto donde True indica que no tiene error y False: indica que hay error
+    """
     syntaxis_correcta = []      #Lista para enviar verificacion True o False      
     lista_recibida = []         #Lista donde se van almacenar las entradas de texto
     primera_validacion = []     #En esta lista se almacena los datos que se van a enviar ya sea las alarmas o los datos escritos
@@ -136,15 +140,14 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
     ver_nombre = lista_recibida[0]
     ver_apellido = lista_recibida[1]
     ver_correo = lista_recibida[2]
-    ver_username = lista_recibida[3]
-    ver_DPI = lista_recibida[4]
-    ver_telefono = lista_recibida[5]
-    ver_fecha = lista_recibida[6]
-    ver_password = lista_recibida[7]
-    ver_confirmacion = lista_recibida[8]
+    ver_DPI = lista_recibida[3]
+    ver_telefono = lista_recibida[4]
+    ver_fecha = lista_recibida[5]
+    ver_password = lista_recibida[6]
+    ver_confirmacion = lista_recibida[7]
     
     #Nombre
-    if ver_nombre.isalpha():                    #Si el nombre es totla mente texto
+    if ver_nombre.isalpha():                    #Si el nombre es totalmente texto
         check = True
         primera_validacion.append(ver_nombre)
         syntaxis_correcta.append(check)
@@ -163,7 +166,7 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         
     else:
         #Etiqueta
-        check = True
+        check = False
         ver_apellido =  "El apellido contiene otro tipo de simbolos"
         primera_validacion.append(ver_apellido)
         syntaxis_correcta.append(check)
@@ -231,12 +234,7 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         check = False
         ver_fecha = "formato de  fecha invalida"
         primera_validacion.append(ver_fecha)
-        syntaxis_correcta.append(check)
-        
-    #username
-    check = True            #El username siempre es correcto ya que solo se rebisa la syntaxis
-    primera_validacion.append(ver_username)
-    syntaxis_correcta.append(check)    
+        syntaxis_correcta.append(check)    
     
     
     # Telefono
@@ -317,7 +315,7 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
             check = False
             ver_password = "La clave no es valida debe de usar numeros, letras mayusculas, minusculas, y simbolos especiales como: !#%..."
             primera_validacion.append(ver_password)
-            syntaxis_correcta.append(check)          
+            syntaxis_correcta.append(check)         
     else:
         check = False
         ver_confirmacion = "Cantidad de diguitos insuficientes"
