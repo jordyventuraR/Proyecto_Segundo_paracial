@@ -159,8 +159,13 @@ def regresar(raiz, frame_cuestionario):
     boton6.lift()
     raiz.mainloop() 
 
+        
+        
+    
+
+
 #Presenta el cuestionario que sirve de cuestionario de admision
-def preguntas_cuestionario(frame_principal,raiz, imagen):
+def preguntas_cuestionario(frame_principal, raiz, imagen):
     #Se destruye el frame actual
     frame_principal.destroy()
     

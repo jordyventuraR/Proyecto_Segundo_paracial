@@ -20,6 +20,12 @@ def mensajes(frame_nueva_cuenta, lienzo_nueva_cuenta, lista_recibida, syntaxis_c
         return enviar_error
 #Coloca una etiqueta en la posicion que se requiera
 def mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, mensaje_de_error, corx, cory):
+    """La funcion creea una etiqueta que recibe como argumento:
+    1) Frame
+    2) El lienzo
+    3) El mensaje de error
+    4) Cordenada en X
+    5) Cordenada en Y"""
     etiquetA1 = Label(frame_nueva_cuenta, text = mensaje_de_error)
     etiquetA1.pack()
     etiquetA1 = lienzo_nueva_cuenta.create_window(corx, cory, anchor = NW, window = etiquetA1)

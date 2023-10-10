@@ -16,6 +16,12 @@ def opciones(frame, text, variable, lienzo, varx, vary, value):
 
 #La funcion enviar
 def enviar(datos, frame):
+    """Devuelve el valor de la casa ganadora por ende recibe como parametro:
+    1) datos: le sirve para obtener los valores de las respuestas de cada pregunta
+    2) El frame: el cual lo destruye
+    
+    como retorno entrega: ->El nombre de la casa ganadora o el estado False el cual indica 
+    que algunas de las preguntas no fue respondida"""
     #Declaracion de las variables para el conteo
     Gryffindor=0
     Hufflepuff=0
@@ -24,26 +30,37 @@ def enviar(datos, frame):
     
     #obtiener el  valor de cada opcion seleccionada donde todas las respuestas  a pertenecen a una escuela
     decisiones = [decision.get() for decision in datos]
-    #Suma los puntajes de cada opcion
-    for index, value in enumerate(decisiones):
-        if value == 1:
-            Gryffindor=1+Gryffindor
-        elif value == 2:
+    
+    #Hace la revision de si todas las preguntas tiene respuestas
+    for value in decisiones:
+        if value==0:
+            print("Hay preguntas que no fueron resueltas")
+            return False
+    #En caso de que si todas tienen solucion   
+    for value in decisiones:
+        if value == 1:                  #Si el participante ingreso respuestas con referencia a opcion 1
+            Gryffindor+=1
+        elif value == 2:                #Si el participante ingreso respuestas con referencia a opcion 2
             Hufflepuff=1+Hufflepuff
-        elif value == 3:
+        elif value == 3:                #Si el participante ingreso respuestas con referencia a opcion 3
             Ravenclaw=1+Ravenclaw
+        else:                           ##Si el participante ingreso respuestas con referencia a opcion 4
+            Slytherin=1+Slytherin       
             
-        elif value == 4:
-            Slytherin=1+Slytherin
-    #crea una lista con un nombre y el valor del puntaje de esa escuela
-    cantidad = {Gryffindor: 'Gryfindor', Hufflepuff: 'Hufflepuff', Ravenclaw: 'Ravenclaw', Slytherin: 'Slytherin'}
-    #Obtiene el valor maximo de la lista
-    casa_ganadora = max(cantidad, key=cantidad.get)
+    casas = [Gryffindor, Hufflepuff, Ravenclaw, Slytherin] #Guarda en una lista el valor que obtuvo en cada opcion
+    casa_ganadora = max(casas)                             #Obtiene la que tuvo mayor resultado
+    
     #Destruye el frame 
     frame.destroy()
-
-    #Devuelve el valor de la lista mas grande al modulo principal donde fue llamada
-    return casa_ganadora
+    #Compara si el valor que obtuvo cada casa es igual al valor de la casa mas grande y retorna esa respuesta(La casa ganadora)
+    if Gryffindor==casa_ganadora:
+        return "Gryffindor es la casa ganadora"
+    elif Hufflepuff==casa_ganadora:
+        return "Hufflepuff es la casa ganadora"
+    elif Ravenclaw==casa_ganadora:
+        return "Ravenclaw"
+    elif Slytherin==casa_ganadora:
+        return "Slytherin"
     
 #la funcion cuestionario
 def cuestionario(raiz, imagen, frame, lienzo):
@@ -138,6 +155,7 @@ def cuestionario(raiz, imagen, frame, lienzo):
     datos=[decision1, decision2, decision3, decision4, decision5, decision6, decision7, decision8, decision9]
     #Envia los datos
     return datos
+
 
     
     
