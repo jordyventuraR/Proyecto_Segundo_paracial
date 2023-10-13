@@ -276,7 +276,7 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         syntaxis_correcta.append(check)
         
 
-    # #Contraseña
+    #Contraseña
     carnumero = 0
     carletramayuscula = 0
     carletraminuscula = 0
@@ -321,7 +321,8 @@ def recibir_datos_de_crear_cuenta (lista_de_recepcion, frame_nueva_cuenta, cortx
         ver_confirmacion = "Cantidad de diguitos insuficientes"
         primera_validacion.append(ver_confirmacion)
         syntaxis_correcta.append(check)
-    
+        
+
     return primera_validacion, syntaxis_correcta
     
     

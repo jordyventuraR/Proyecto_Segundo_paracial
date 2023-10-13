@@ -7,10 +7,12 @@ from tkinter import*            #Libreria para el manejo de graficos
 from  Preguntas import cuestionario, enviar                                         #Libreria para hacer el cuestionario
 from Programa_de_crear_cuenta import nueva_cuenta, recibir_datos_de_crear_cuenta    #Libreria que crea la pantalla de registros y valida la syntaxis de los datos ingresados
 from Alertas_cuenta_python import mensajes, mensajes_validacion_2                   #Libreria que coloca los errores de manera visual
-from almacenado_datos import alamacenamiento                                        #Libreria que se almacena y se encripta la contraseña
+from almacenamiento_todos import guardado                                           #Libreria que se almacena y se encripta la contraseña
 from Enviar_correo import confirmacion_new, correo_adv                              #Libreria que envia el correo de confirmacion
+from guardaencripta_individual import  guardado_estudiante                          #Libreria que guarda en un documento la informacion de un estudiante y encripta su contraseña
 from Busqueda_datos import*                                                         #Libreria que busca que ciertos datos sean unicos
-
+import time
+import sys
 
 #Botones
 def administracion():
@@ -20,39 +22,53 @@ def administracion():
 def seleccionar_escuela(escuela):
     print(escuela)
     
-def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz):
+def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz, imagen):
     lista_DPI, lista_nombre_apellido, lista_telefono, lista_correo = generacion_sublistas()
+    print(lista_DPI)
+    print(lista_nombre_apellido)
+    print(lista_correo)
+    #lista_de_datos = cuestionario(raiz, imagen, frame_cuestionario, lienzo_nueva_cuenta)
     if validacion2_DPI(primera_validacion[2], lista_DPI) == False:                 #Si el DPI es unico
         if  validacion2_identidad(primera_validacion[0], primera_validacion[1], lista_nombre_apellido) == False:       #Si el username es unico
             if validacion2_telefono(primera_validacion[4], lista_telefono) == False:    #Si el numero de telefono es unico
                 if validacion2_correo(primera_validacion[5], lista_correo) == False:  #Si el correo es unico
-                    if alamacenamiento() == False:                      #Si los datos ya fueron almacenados 
+                    if guardado(primera_validacion, "Almacenado_todos.txt") == True:                      #Si los datos ya fueron almacenados
+                        guardado_estudiante(primera_validacion)
                         envio_correo = confirmacion_new(primera_validacion[5], primera_validacion[0], casa)
-                        if envio_correo == 'OK':                       #Si el correo fue enviado correctamente
+                        if envio_correo == True:                       #Si el correo fue enviado correctamente
+                            guardado_estudiante(primera_validacion)
                             regresar(raiz, frame_nueva_cuenta)         #Regresa a la pantalla principal
                         else:
+                            
                             mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "No se pudo enviar el correo", 800, 500)
+                            time.sleep(2)
+                            sys.exit()
                     else:
                         mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "No se pudo guardar los datos", 800, 500)
+                        time.sleep(2)
+                        sys.exit()
                 else:
                     mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El correo ya existe en el sistema", 800, 400)
-                    return False
+                    time.sleep(2)
+                    sys.exit()
             else:
                 mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El numero de celular ya existe en el sistema", 800, 300)
-                return False
+                time.sleep(2)
+                sys.exit()
         else:
             mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "Esa identidad ya existe en el sistema", 800, 350)
             if validacion2_correo(primera_validacion[5], lista_correo) == True:
                 envio_correo2 =  correo_adv(primera_validacion[5], primera_validacion[0])                                 #Si el nombre el apellido y el correo son iguales se le advierte a usuario original
             else:
-                return False
+                sys.exit()
     else:
         mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "El DPI ya existe en el sistema", 800, 200)
-        return False
+        time.sleep(2)
+        sys.exit()
         
 def boton_enviar_cuenta(casa, imagen, lienzo_nueva_cuenta, frame_nueva_cuenta, lista, raiz,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
     lista_de_recepcion = nueva_cuenta(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, imagen,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion) #Obtiene el valor de lo que se escribio actualmente en los campos de textos
-    primera_validacion, syntaxis_correcta = recibir_datos_de_crear_cuenta(lista_de_recepcion, frame_nueva_cuenta, 400, 100, imagen)                 #Devuelve la lista con la syntaxis correcta de los datos que tiene los campos de texto         
+    primera_validacion, syntaxis_correcta = recibir_datos_de_crear_cuenta(lista_de_recepcion, frame_nueva_cuenta, 400, 100, imagen)                 #Devuelve la lista con la syntaxis correcta de los datos que tiene los campos de texto        
     enviar_error = mensajes(frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, syntaxis_correcta, 750,  100)                              #Devuelve los errores por pantalla
     #Si hay errores de syntaxis: 
     if enviar_error == True:
@@ -62,8 +78,8 @@ def boton_enviar_cuenta(casa, imagen, lienzo_nueva_cuenta, frame_nueva_cuenta, l
         botonEnvD.lift()
     #Si no hay errores de syntaxis:
     else:
-        #Se verifican que sena datos unicos
-        botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz), width=10, height=5)
+        #Se verifican que se datos unicos
+        botonEnvD = Button(frame_nueva_cuenta, text="Enviar", command=lambda: validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz, imagen), width=10, height=5)
         botonEnvD.place(x=1278, y=0)
         botonEnvD.lift()
 

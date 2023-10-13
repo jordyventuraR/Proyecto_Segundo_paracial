@@ -12,8 +12,9 @@ def mensajes(frame_nueva_cuenta, lienzo_nueva_cuenta, lista_recibida, syntaxis_c
     iniciales y no en cada etiqueta
     """
     enviar_error = False
-    Error = False
-    for index, validez in syntaxis_correcta:     #Si la lista con los valores True False tiene un False de error
+    error = False
+    print("Segundo banderin")
+    for index, validez in enumerate(syntaxis_correcta):     #Si la lista con los valores True False tiene un False de error
         if validez == False:
             #Coloca la etiqueta
             etiquetA1 = Label(frame_nueva_cuenta, text = lista_recibida[index])
@@ -22,11 +23,13 @@ def mensajes(frame_nueva_cuenta, lienzo_nueva_cuenta, lista_recibida, syntaxis_c
             error = True        #Devuelve que si hubo error
         cory += 50              #Aumenta 50 la posicion en Y para bajar de posicion
     #Retorna si hubo o no error     
-    if Error == True: 
+    if error == True: 
         enviar_error = True
+        print(enviar_error)
         return enviar_error
     else:
         enviar_error = False
+        print(enviar_error)
         return enviar_error
 
 #Coloca una etiqueta en la posicion que se requiera

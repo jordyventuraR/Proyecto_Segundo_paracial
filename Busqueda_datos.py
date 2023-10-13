@@ -12,43 +12,42 @@ def generacion_sublistas():
     lista_correo = []
     
     #Variables enteras
-    numeroNom = 0       #Posicion asociada al nombre
-    numeroApe = 1       #Posicion asociada al apellido
-    numeroDPI = 2       #Posicion DPI
-    numeroTel = 4       #Posicion del Telefono
-    numeroCorreo = 5    #Posicion del correo
+    numeroNom = 1       #Posicion asociada al nombre
+    numeroApe = 2       #Posicion asociada al apellido
+    numeroDPI = 3       #Posicion DPI
+    numeroTel = 5       #Posicion del Telefono
+    numeroCorreo = 6    #Posicion del correo
     
-    
-    with open('Base_datos_estudiantes.txt', 'r') as fp:
+    with open('Almacenado_todos.txt', 'r') as fp:
         datos = fp.readlines()
         for index, dato in enumerate(datos):
             #Guarda el nombre en una lista
             if index == numeroNom:
-                numeroNom += 8
+                numeroNom += 7
                 lista_identidad.append(dato)
                 
             #Guarda el apellido en una lista    
             if index == numeroApe:
-                numeroApe += 8
+                numeroApe += 7
                 lista_identidad.append(dato)
                 
             #Guarda el numero de DPI en una lista
             if index == numeroDPI:
-                numeroDPI += 8
+                numeroDPI += 7
                 lista_DPI.append(dato)
             
             #Guarda el numero de telefono en una lista
             if index == numeroTel:
-                numeroTel += 8
+                numeroTel += 7
                 lista_telefonos.append(dato)
                 
             #Gurda el numero de correo en una lista
             if index == numeroCorreo:
-                numeroCorreo += 8
+                numeroCorreo += 7
                 lista_correo.append(dato)
                 lista_identidad.append(dato)
             
-    
+
     return lista_DPI, lista_identidad, lista_telefonos, lista_correo
 
 
@@ -56,6 +55,10 @@ def generacion_sublistas():
 def validacion2_DPI(clave, lista):
     """La funcion sirve para buscar un dato en este caso busca un numero de DPI en la lista DPI 
     retorna: -> True si el numero buscado aparece en la lista y False sino aparece (es unico)"""
+    clave = clave + '\n'
+    print("Validacion del DPI")
+    print(clave)
+    print(lista)
     if clave in lista:           #Busca si el numero existe en el documento
         resultado_DPI = True     #El numero da error por no ser unico
     else:
@@ -66,6 +69,10 @@ def validacion2_DPI(clave, lista):
 def validacion2_telefono(clave, lista):
     """La funcion sirve para buscar un dato en este caso busca un numero de telefono  en la lista numeros de los estudiantes 
     retorna: -> True si el numero buscado aparece en la lista y False sino aparece"""
+    clave = clave + '\n'
+    print("Validacion del telefono")
+    print(clave)
+    print(lista)
     if clave in lista:
         resultado_telefono = True
     else:
@@ -76,6 +83,11 @@ def validacion2_telefono(clave, lista):
 def validacion2_correo(clave, lista):
     """La funcion sirve para buscar un dato en este caso busca el correo  en la lista de correos de  los estudiantes 
     retorna: -> True si el correo buscado aparece en la lista y False sino aparece"""
+    clave = clave + '\n'
+    print("Validacion del correo")
+    print(clave)
+    print(lista)
+    clave = clave + '\n'
     if clave in lista:
         resultado_correo = True
     else:
@@ -85,6 +97,12 @@ def validacion2_correo(clave, lista):
 def validacion2_identidad(clave_nombre, clave_apellido, lista_identidad):
     """La funcion sirve para buscar un dato en este caso busca el nombre y el apellido  en la lista de correos de  los estudiantes 
     retorna: -> True si el correo buscado aparece en la lista y False sino aparece"""
+    clave_nombre = clave_nombre + '\n'
+    clave_apellido = clave_apellido + '\n'
+    print("Validacion de la identidad")
+    print(clave_nombre)
+    print(clave_apellido)
+    print(lista_identidad)
     for index, busqueda in enumerate(lista_identidad):          #Obtiene el index de la lista 
         if clave_nombre == busqueda:                            #busca el nombre dentro de la lista
             if clave_apellido == lista_identidad(index+1):      #Si lo encuentra revisa que el apellido siguiente sea igual
