@@ -10,18 +10,72 @@ from Alertas_cuenta_python import mensajes, mensajes_validacion_2               
 from almacenamiento_todos import guardado                                           #Libreria que se almacena y se encripta la contraseña
 from Enviar_correo import confirmacion_new, correo_adv                              #Libreria que envia el correo de confirmacion
 from guardaencripta_individual import  guardado_estudiante                          #Libreria que guarda en un documento la informacion de un estudiante y encripta su contraseña
+from cuenta_administracion import admin                                             #Libreria que crea la administracion
+from panel_administrativo import principal                                          #Libreria que desarrolla el panel principal de administracion  
+from escuela_prof_est import seleccion_rol                                          #Libreria que maneja el ingreso de profesores y estudiantes                                                                          
 from Busqueda_datos import*                                                         #Libreria que busca que ciertos datos sean unicos
 import time
 import sys
 
+
 #Botones
-def administracion():
-    print("Administracion")
+def administracion(raiz, frame_principal, imagenadmin):
+    """Cuando se presiona el boton de administracion lo dirige al portal del rol de administracion, recibe como parametro:
+    1)raiz
+    2) frame principal
+    3) La imagen del porfal de administracion
+    Y no tiene retorno"""
+    frame_principal.destroy()                       #Se destruye el frame principal
+    
+    #Creacion del frame para el cuestionario
+    frame_administracion = Frame(raiz)              
+    frame_administracion.pack()
+    
+    
+    #Crea el lienzo con la imagen de fondo
+    lienzo_nueva_cuenta = Canvas(frame_administracion, width = 2160, height = 2160)
+    lienzo_nueva_cuenta.pack()
+    lienzo_nueva_cuenta.create_image(0, 0, anchor=NW, image = imagenadmin)
+    
+    admin(raiz, frame_administracion, lienzo_nueva_cuenta, imagenadmin)
+    
+    #Boton que regresa a la pantalla principal
+    botonregresar = Button(frame_administracion, text="Regresar", command  = lambda: regresar(raiz, frame_administracion), width=6, height=4) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonregresar.place(x=0, y=0)
+    botonregresar.lift()
+        
 
 #Funciones de los botones
-def seleccionar_escuela(escuela):
-    print(escuela)
+def seleccionar_escuela(imagen_fondo, frame, raiz, casa):
+    frame.destroy()
     
+    #Creacion del frame para el cuestionario
+    frame_escuela = Frame(raiz)              
+    frame_escuela.pack()
+    
+    
+    #Crea el lienzo con la imagen de fondo
+    lienzo_select_rol = Canvas(frame_escuela, width = 2160, height = 2160)
+    lienzo_select_rol.pack()
+    lienzo_select_rol.create_image(0, 0, anchor=NW, image = imagen_fondo)
+    
+    
+    if casa==1:
+        seleccion_rol(lienzo_select_rol, "#F70000")          #Rojo Gryffindor
+    elif casa==2:
+        seleccion_rol(lienzo_select_rol, "#D3E522")          #Amarillo Hufflepuff
+    elif casa==3:
+        seleccion_rol(lienzo_select_rol, "#43E522")          #Verde Slidering
+    else:
+        seleccion_rol(lienzo_select_rol, "#2257E5")          #Azul Ravenclaw
+    
+    #Boton de regresar
+    #Boton que regresa a la pantalla principal
+    botonregreso = Button(lienzo_select_rol, text="Regresar", command  = lambda: regresar(raiz, frame_escuela), width=6, height=4) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonregreso.place(x=0, y=0)
+    botonregreso.lift()
+    
+        
 def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz, imagen):
     lista_DPI, lista_nombre_apellido, lista_telefono, lista_correo = generacion_sublistas()
     print(lista_DPI)
@@ -137,29 +191,36 @@ def regresar(raiz, frame_cuestionario):
 
     #Cargar el logo en la pestaña
     raiz.iconbitmap("Hogwartsicono.ico")   
-
-    #Cargar imagenes que sirven de botones y de fondo
-    imagen = PhotoImage(file="hogwartsFP.png") 
-    imagenEsc1=PhotoImage(file="Gryffindor_logo.png")
-    imagenEsc2=PhotoImage(file="Hufflepuff.png")
-    imagenEsc3=PhotoImage(file="Slytherin.png")
-    imagenEsc4=PhotoImage(file="Ravenclaw.png")
     
     #Crea el lienzo
     lienzo = Canvas(frame_principal, width=2160, height=2160)
     lienzo.pack()
+    
+    #Carga de imagenes
+    imagen      = PhotoImage(file = "hogwartsFP.png") 
+    imagenadmin = PhotoImage(file = "Administracion.png")
+    imagenEsc1  = PhotoImage(file = "Gryffindor_logo.png")
+    imagenEsc2  = PhotoImage(file = "Hufflepuff.png")
+    imagenEsc3  = PhotoImage(file = "Slytherin.png")
+    imagenEsc4  = PhotoImage(file = "Ravenclaw.png")
+    imagenfon1  = PhotoImage(file = "Gryffindor_fondo.png")
+    imagenfon2  = PhotoImage(file = "Hufflepuff_fondo.png")
+    imagenfon3  = PhotoImage(file = "Slytherin_fondo.png")
+    imagenfon4  = PhotoImage(file = "Ravenclaw_fondo.png")
+    
+    
 
     #Coloca la imagen de fondo
     lienzo.create_image(0, 0, anchor=NW, image=imagen)
 
     # Crear botones para las escuelas y cambia el parametro de la escuela
-    botonEsc1 = Button(frame_principal, image=imagenEsc1, command=lambda: seleccionar_escuela("Gryffindor"))
-    botonEsc2 = Button(frame_principal, image=imagenEsc2, command=lambda: seleccionar_escuela("Hufflepuff"))
-    botonEsc3 = Button(frame_principal, image=imagenEsc3, command=lambda: seleccionar_escuela("Slytherin"))
-    botonEsc4 = Button(frame_principal, image=imagenEsc4, command=lambda: seleccionar_escuela("Ravenclaw"))
+    botonEsc1 = Button(frame_principal, image=imagenEsc1, command=lambda: seleccionar_escuela(imagenfon1, frame_principal, raiz, 1))
+    botonEsc2 = Button(frame_principal, image=imagenEsc2, command=lambda: seleccionar_escuela(imagenfon2, frame_principal, raiz, 2))
+    botonEsc3 = Button(frame_principal, image=imagenEsc3, command=lambda: seleccionar_escuela(imagenfon3, frame_principal, raiz, 3))
+    botonEsc4 = Button(frame_principal, image=imagenEsc4, command=lambda: seleccionar_escuela(imagenfon4, frame_principal, raiz, 4))
     # Crea el boton para el de crear cuenta y el de administracion
     boton5 = Button(frame_principal, text="Crear cuenta", command=lambda: preguntas_cuestionario(frame_principal, raiz, imagen), width=10, height=5)
-    boton6 = Button(frame_principal, text="administracion", command=administracion, width=10, height=5)
+    boton6 = Button(frame_principal, text="administracion", command=lambda: administracion(raiz, frame_principal, imagenadmin), width=10, height=5)
 
     #Posiciona los botones en cordenadas X, Y
     botonEsc1.place(x=493, y=100) 
