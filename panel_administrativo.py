@@ -87,7 +87,8 @@ def registrar_profesor(entrada_nombre, entrada_apellido, entrada_DPI, entrada_pa
     textapellido   =  entrada_apellido.get()
     textdpi        =  entrada_DPI.get()
     textpassword   =  entrada_password.get()
-    textconfirpass =  entrada_confirpass.get()
+    textconfirpass  = entrada_confirpass.get()
+    
     
     lienzo_administrar_profesor.destroy()
     
@@ -103,7 +104,7 @@ def registrar_profesor(entrada_nombre, entrada_apellido, entrada_DPI, entrada_pa
             fp.write(textapellido + '\n')
             fp.write(textdpi + '\n')
             fp.write(textpassword + '\n')
-            fp.write(textconfirpass + '\n')
+        
         lienzo_administrar_profesor.destroy()  
         nuevo_lienzo_administrar = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
         nuevo_lienzo_administrar.pack()
@@ -221,12 +222,227 @@ def listado_profesores(lienzo_administrar_profesor, frame_administracion):
     """La funcion que ve el listado de los profesores """
     lienzo_administrar_profesor.destroy()
     
+    lista_nombres_profes = []
+    opnom = StringVar()
+    posicionomp = 0
+    
+    
     #4)Crea el lienzo de administracion de profesores
-    lienzo_administrar_profesor = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
-    lienzo_administrar_profesor.pack()
-    lienzo_administrar_profesor.place(x=916, y=284)
-    lienzo_administrar_profesor.create_text(200, 30, text="Administrador de profesores", fill="white", font=("Arial", 20))
+    lienzo_listado = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
+    lienzo_listado.pack()
+    lienzo_listado.place(x=916, y=284)
+    lienzo_listado.create_text(200, 30, text="Listado de profesores", fill="white", font=("Arial", 20))
+    
+    
+    with open('todos_profesores.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if index == posicionomp:
+                posicionomp += 4
+                lista_nombres_profes.append(dato.strip())
+                
+    
+    menu = OptionMenu(lienzo_listado, opnom, *lista_nombres_profes)
+    menu.pack()
+    menu.place(x=160, y=80)
+    
+    
+def guardar_edicion(lista_antes, lista_despues, new_nombre, new_apellido, new_dpi, new_password, lienzo_administra_profesor, frame_administracion):
+    """Esta funcion es la que rescribe los datos en el documento con la edicion guardada"""
+    lista_durante = []
+    lista_total = []
+    nombre = new_nombre.get()
+    apellido = new_apellido.get()
+    dpi = new_dpi.get()
+    password = new_password.get()
+    print("Lista: ")
+    lista_durante.append(nombre)
+    lista_durante.append(apellido)
+    lista_durante.append(dpi)
+    lista_durante.append(password)
+    print(lista_durante)
+    
+    lista_total = lista_antes + lista_durante + lista_despues
+    
+    #Todo: Escritura
+    # Abre el archivo en modo append
+    with open("todos_profesores.txt", "w") as archivo:
+        # Agrega valores en el archivo de forma vertical
+        for dato in lista_total:
+            archivo.write(dato + '\n')
+            
+    lienzo_administra_profesor.destroy()
+    #Crea el lienzo de administracion de profesores
+    new_lienzo_editprof = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
+    new_lienzo_editprof.pack()
+    new_lienzo_editprof.place(x=916, y=284)
+    new_lienzo_editprof.create_text(200, 30, text="Guardando...", fill="white", font=("Arial", 20))
+    
 
+def panel_mostrar_datos(lista_antes, lista_durante, lista_despues, lienzo_administrar_profesor, frame_administracion):
+    """Aqui se muestan los widgerst para modificar los datos de un profesor y el boton que cambia los datos"""
+    lienzo_administrar_profesor.destroy()
+    
+    #Variables tipor StringVar()
+    entrada_nombre     = StringVar()
+    entrada_apellido   = StringVar()
+    entrada_DPI        = StringVar()
+    entrada_password   = StringVar()
+    print(lista_durante)
+    
+    entrada_nombre.set(lista_durante[0])
+    entrada_apellido.set(lista_durante[1])
+    entrada_DPI.set(lista_durante[2])
+    entrada_password.set(lista_durante[3])
+    
+    #4)Crea el lienzo de administracion de profesores
+    new_lienzo_editprof = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
+    new_lienzo_editprof.pack()
+    new_lienzo_editprof.place(x=916, y=284)
+    new_lienzo_editprof.create_text(200, 30, text="Editar profesores", fill="white", font=("Arial", 20))
+    
+    #Etiquetas
+    #Nombre
+    etiqueta_namep = Label(new_lienzo_editprof, text="nombre: ")
+    etiqueta_namep.pack()
+    new_lienzo_editprof.create_window(100, 45, anchor = NW, window = etiqueta_namep)
+    
+    #Apellido
+    etiqueta_apellidop = Label(new_lienzo_editprof, text="apellido: ")
+    etiqueta_apellidop.pack()
+    new_lienzo_editprof.create_window(100, 80, anchor = NW, window = etiqueta_apellidop)
+    
+    #DPI
+    etiqueta_DPIP = Label(new_lienzo_editprof, text="DPI: ")
+    etiqueta_DPIP.pack()
+    new_lienzo_editprof.create_window(100, 115, anchor = NW, window = etiqueta_DPIP)
+    
+    #Contraseña
+    etiqueta_passwordp = Label(new_lienzo_editprof, text="password: ")
+    etiqueta_passwordp.pack()
+    new_lienzo_editprof.create_window(100, 150, anchor = NW, window = etiqueta_passwordp)
+    
+    #Campo de texto
+    #Nombre
+    campo_namep= Entry(new_lienzo_editprof, textvariable = entrada_nombre)
+    campo_namep.pack()
+    new_lienzo_editprof.create_window(200, 45, anchor = NW, window = campo_namep)
+    
+    #Apellido
+    campo_apellidop= Entry(new_lienzo_editprof, textvariable = entrada_apellido)
+    campo_apellidop.pack()
+    new_lienzo_editprof.create_window(200, 80, anchor = NW, window = campo_apellidop)
+    
+    #DPI
+    campo_DPIP= Entry(new_lienzo_editprof, textvariable = entrada_DPI)
+    campo_DPIP.pack()
+    new_lienzo_editprof.create_window(200, 115, anchor = NW, window = campo_DPIP)
+    
+    #Password
+    campo_passwordp = Entry(new_lienzo_editprof, textvariable = entrada_password)
+    campo_passwordp.pack()
+    new_lienzo_editprof.create_window(200, 150, anchor = NW, window = campo_passwordp)
+    
+    botonmostrar = Button(new_lienzo_editprof, text="Guardad", command  = lambda: guardar_edicion(lista_antes, lista_despues, entrada_nombre, entrada_apellido, entrada_DPI, entrada_password, lienzo_administrar_profesor, frame_administracion), width=6, height=3) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonmostrar.place(x=360, y=150)
+    botonmostrar.lift()
+    
+    
+def editar_divide(clave_dpi, lienzo_administrar_profesor, frame_administracion):
+    limite_inferior = 0
+    limite_superior = 0
+    busqueda_dpi = clave_dpi.get()
+    lista_todos = []
+    lista_antes = []
+    lista_durante = []
+    lista_despues = []
+    
+    #Variables enteras
+    posicionomp    = 0         #Posicion asociada al nombre
+    posicionappe   = 1         #Posicion asociada al apellido
+    posiciondpi    = 2         #Posicion del DPI
+    posicionpass   = 3         #Posicion del password
+    
+    
+    #Lee el archivo y guarda el nombre y el DPI de todos los profesores
+    with open('todos_profesores.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if index == posicionomp:
+                posicionomp += 4
+                lista_todos.append(dato.strip())
+            if index == posicionappe:
+                posicionappe += 4
+                lista_todos.append(dato.strip())
+            if index == posiciondpi:
+                posiciondpi += 4
+                lista_todos.append(dato.strip())
+            if index == posicionpass:
+                posicionpass += 4
+                lista_todos.append(dato.strip())
+                
+    #Crea una lista con solo los DPI que tiene el mismo nombre que el paso anterior
+    for index, clave in enumerate(lista_todos):
+        if clave == busqueda_dpi:
+            limite_inferior = index+1           #Password
+            limite_superior = index-2           #Nombre    
+    #Lee el archivo y lo divide en tres secciones el antes, los datos y el despues de la modificacion
+    with open('todos_profesores.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(lista_todos):
+            if index < limite_superior:
+                lista_antes.append(dato.strip())
+            elif limite_superior <= index <= limite_inferior:
+                lista_durante.append(dato.strip())
+            else:
+                lista_despues.append(dato.strip())
+                
+    panel_mostrar_datos(lista_antes, lista_durante, lista_despues, lienzo_administrar_profesor, frame_administracion)
+                
+    
+def muestra_busca(variable_nombre, lienzo_administrar_profesor, frame_administracion):
+    clave_nombre = variable_nombre.get()            #Obtiene el valor del menu(nombre del profesor)
+    lista_datos_profes = []                         #Guarda el nombre de todos los profesores y su DPI
+    lista_dpi_profes = []                           #Guarda solo el DPI
+    opdpi = StringVar()                             #Guarda el valor del menu del DPI
+    #Variables enteras
+    posicionNomp   = 0         #Posicion asociada al nombre
+    posiciondpi    = 2         #Posicion del DPI
+    #Lee el archivo y guarda el nombre y el DPI de todos los profesores
+    with open('todos_profesores.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if index == posicionNomp:
+                posicionNomp += 4
+                lista_datos_profes.append(dato.strip())
+            if index == posiciondpi:
+                posiciondpi += 4
+                lista_datos_profes.append(dato.strip())
+                
+    #Crea una lista con solo los DPI que tiene el mismo nombre que el paso anterior
+    for index, clave in enumerate(lista_datos_profes):
+        if clave == clave_nombre:
+            lista_dpi_profes.append(lista_datos_profes[index+1])
+            
+    
+    lienzo_administrar_profesor.destroy()                   #Destruye el lienzo
+    #Crea el lienzo de administracion de profesores
+    new_lienzo_adminiprof = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
+    new_lienzo_adminiprof.pack()
+    new_lienzo_adminiprof.place(x=916, y=284)
+    new_lienzo_adminiprof.create_text(200, 30, text="Buscando DPI con esos datos...", fill="white", font=("Arial", 12))
+    
+    #Crea el menu opciones solo con los DPI        
+    menu = OptionMenu(new_lienzo_adminiprof, opdpi, *lista_dpi_profes)
+    menu.pack()
+    menu.place(x=160, y=80)
+    
+    #El boton para editar el perfil con ese DPI
+    botonmostrarbuscar = Button(new_lienzo_adminiprof, text="Editar", command = lambda: editar_divide(opdpi, lienzo_administrar_profesor, frame_administracion), width=6, height=3) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonmostrarbuscar.place(x=160, y=150)
+    botonmostrarbuscar.lift()
+    
+    
 def editar_profesor(lienzo_administrar_profesor, frame_administracion):
     """La funcion que edita el profesor"""
     lienzo_administrar_profesor.destroy()
@@ -235,7 +451,29 @@ def editar_profesor(lienzo_administrar_profesor, frame_administracion):
     lienzo_administrar_profesor = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
     lienzo_administrar_profesor.pack()
     lienzo_administrar_profesor.place(x=916, y=284)
-    lienzo_administrar_profesor.create_text(200, 30, text="Administrador de profesores", fill="white", font=("Arial", 20))
+    lienzo_administrar_profesor.create_text(200, 30, text="Editar profesor", fill="white", font=("Arial", 20))
+    
+    opnom = StringVar()
+    posicionomp = 0
+    
+    lista_nombres_profes = []
+    
+    with open('todos_profesores.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if index == posicionomp:
+                posicionomp += 4
+                lista_nombres_profes.append(dato.strip())
+                
+    
+    menu = OptionMenu(lienzo_administrar_profesor, opnom, *lista_nombres_profes)
+    menu.pack()
+    menu.place(x=160, y=80)
+    
+    botonmostrarbuscar = Button(lienzo_administrar_profesor, text="Buscar DPI", command  = lambda: muestra_busca(opnom, lienzo_administrar_profesor, frame_administracion), width=6, height=3) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonmostrarbuscar.place(x=160, y=150)
+    botonmostrarbuscar.lift()
+    
     
 
 def administracion_profesores(frame_administracion, lienzo_administrar_profesor):

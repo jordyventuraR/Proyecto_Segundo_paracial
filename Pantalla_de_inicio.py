@@ -12,13 +12,13 @@ from Enviar_correo import confirmacion_new, correo_adv                          
 from guardaencripta_individual import  guardado_estudiante                          #Libreria que guarda en un documento la informacion de un estudiante y encripta su contraseña
 from cuenta_administracion import admin                                             #Libreria que crea la administracion
 from panel_administrativo import principal                                          #Libreria que desarrolla el panel principal de administracion  
-from escuela_prof_est import seleccion_rol                                          #Libreria que maneja el ingreso de profesores y estudiantes                                                                          
+from select_roles import roles                                                      #Libreria que maneja el ingreso de profesores y estudiantes                                                                         
 from Busqueda_datos import*                                                         #Libreria que busca que ciertos datos sean unicos
 import time
 import sys
 
 
-#Botones
+
 def administracion(raiz, frame_principal, imagenadmin):
     """Cuando se presiona el boton de administracion lo dirige al portal del rol de administracion, recibe como parametro:
     1)raiz
@@ -61,20 +61,20 @@ def seleccionar_escuela(imagen_fondo, frame, raiz, casa):
     
     
     if casa==1:
-        seleccion_rol(lienzo_select_rol, "#F70000")          #Rojo Gryffindor
+        roles(lienzo_select_rol, "#F70000")          #Rojo Gryffindor
     elif casa==2:
-        seleccion_rol(lienzo_select_rol, "#D3E522")          #Amarillo Hufflepuff
+        roles(lienzo_select_rol, "#D3E522")          #Amarillo Hufflepuff
     elif casa==3:
-        seleccion_rol(lienzo_select_rol, "#43E522")          #Verde Slidering
+        roles(lienzo_select_rol, "#43E522")          #Verde Slidering
     else:
-        seleccion_rol(lienzo_select_rol, "#2257E5")          #Azul Ravenclaw
+        roles(lienzo_select_rol, "#2257E5")          #Azul Ravenclaw
     
     #Boton de regresar
     #Boton que regresa a la pantalla principal
     botonregreso = Button(lienzo_select_rol, text="Regresar", command  = lambda: regresar(raiz, frame_escuela), width=6, height=4) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
     botonregreso.place(x=0, y=0)
     botonregreso.lift()
-    
+
         
 def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, raiz, imagen):
     lista_DPI, lista_nombre_apellido, lista_telefono, lista_correo = generacion_sublistas()
@@ -91,7 +91,18 @@ def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacio
                         envio_correo = confirmacion_new(primera_validacion[5], primera_validacion[0], casa)
                         if envio_correo == True:                       #Si el correo fue enviado correctamente
                             guardado_estudiante(primera_validacion)
-                            regresar(raiz, frame_nueva_cuenta)         #Regresa a la pantalla principal
+                            #Muestra un boton que envia a la aceptacion
+                            lienzo_nueva_cuenta.destroy()
+                            #Crea el lienzo con la imagen de fondo
+                            lienzo_guarda_registro = Canvas(frame_nueva_cuenta, width = 1366, height = 768)
+                            lienzo_guarda_registro.pack()
+                            lienzo_guarda_registro.create_image(0, 0, anchor=NW, image = imagen)
+                            lienzo_guarda_registro.create_text(683, 90, text = "Se ha guardado con exito...", fill="white", font=("Arial", 20))
+                            
+                            #Se verifican que se datos unicos
+                            botonregreso = Button(lienzo_guarda_registro, text="Ok", command=lambda: regresar(raiz, frame_nueva_cuenta), width=10, height=5)
+                            botonregreso.place(x=683, y=384)
+                            botonregreso.lift()        #Regresa a la pantalla principal
                         else:
                             
                             mensajes_validacion_2(frame_nueva_cuenta, lienzo_nueva_cuenta, "No se pudo enviar el correo", 800, 500)

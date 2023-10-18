@@ -11,7 +11,7 @@ def enviar_administracion(entrada1, entrada2, frame_administracion, raiz, imagen
     ingresados por el usuario y si amboos son iguales entra en el panel de administracion sino borra los datos para que 
     sean reingresados, los parametros son:
     1) Entrada de campo de texto 1: Que obtiene el username
-    2) Entrada de campo de texto 2: Que obtiene el password
+    2) Entrada de campo de texto 2: Que obtiene el password 
     3) frame
     4) raiz
     5) la imagen de fondo

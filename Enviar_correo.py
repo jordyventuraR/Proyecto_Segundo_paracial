@@ -21,7 +21,6 @@ def confirmacion_new(correo, nombre, casa) ->str:
         True si el correo se envió correctamente, de lo contrario False.
     """
     try:
-        print("15 banderin")
         destinatario = correo                               #Destinatario
         asunto = "Confirmacion de su registro a Hogwarts"   #Asunto del correo
         

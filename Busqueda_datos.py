@@ -109,3 +109,4 @@ def validacion2_identidad(clave_nombre, clave_apellido, lista_identidad):
                 return True
     else:
         return False                                            #Si no todo lo anterior esta correcto
+    

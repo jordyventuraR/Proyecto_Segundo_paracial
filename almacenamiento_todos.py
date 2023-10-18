@@ -1,12 +1,11 @@
 from cryptography.fernet import Fernet
 
-# Generar una clave de cifrado
-clave_cifrado = Fernet.generate_key()
+# La clave
+clave_cifrado = b'd3iXJXBhYZ0ZasXWw_lIafJ3HyDHZoAmsD7ysmEbjtA='
 fernet = Fernet(clave_cifrado)
 
 #!A partir de aqui surge el error
 def guardado(datos, nombre_de_arcivo):
-    
     password_cifrado = fernet.encrypt(datos[6].encode())
     datos[6]=password_cifrado
     
@@ -24,10 +23,7 @@ def guardado(datos, nombre_de_arcivo):
         with open(nombre_archivo, "ab") as archivo_binario:
             archivo_binario.write(datos[6] + b'\n')  # Almacena la contraseña cifrada como bytes
             
-            
-        print("Onceavo banderin")
         return True
     except FileNotFoundError:
-        print("Onceavo banderin")
         return False
     
