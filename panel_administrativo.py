@@ -1,6 +1,20 @@
 from tkinter import*
+from tkinter import ttk
+from tkinter import filedialog
+from PIL import Image
 import sys
 import time
+import base64
+import io
+from email.mime.text import MIMEText
+from email.mime.multipart  import MIMEMultipart
+
+import smtplib
+import time
+
+
+remitente = "hogwartsesculademagia@gmail.com"   #Desde el correo que vamos a enviar el mensaje
+password = "wksg icol fqnd hvif" 
 
 def cambiar_password(entrada_n1, entrada_n2, frame, lienzo):
     """La funcion que guarda la nueva contraseña"""
@@ -12,9 +26,165 @@ def cambiar_password(entrada_n1, entrada_n2, frame, lienzo):
             fp.write(texto2)
     else:
         cambio_password(frame, lienzo)
-
-def bloqueo_cuentas(camtexto2):
-    pass
+        
+def accion_desbloqueo(opiden):
+    """Esta funcion es la que maneja la logica del desbloqueo de cuentas """
+    #Obtiene el nombre y el apellido de la cuenta reportada
+    usuario = opiden.get()
+    print("Banderin: 1")
+    print(usuario)
+    palabras = usuario.split()
+    nombre = palabras[0]+ "X"
+    print(nombre)
+    apellido = palabras[1]+ "X"
+    print(apellido)
+    
+    #Listas
+    lista_antes       = []
+    lista_durante     = []
+    lista_despues     = []
+    lista_durante_cam = []
+    lista_editada     = []
+    
+    lista_antes_G       = []
+    lista_durante_G     = []
+    lista_despues_G    = []
+    lista_editada_G     = []
+    
+    puntero = 0
+    correo  = "Vacio"
+    
+    #Busca en la lista donde estan todos los usuarios
+    with open('Almacenado_todos.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if dato==nombre and datos[index+1]==apellido:
+                puntero = index
+                break
+    #Divide en 3 bloques el documento el que esta antes, el que tiene el nombre y el apellido y el que esta despues       
+    with open('Almacenado_todos.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if index<puntero:
+                lista_antes.append(dato.strip() + "\n")
+            elif puntero<=index<=puntero+1:
+                lista_durante.append(dato.strip() + "\n")
+            else:
+                lista_despues.append(dato)
+    
+    #al nombre y el apellido le borra el ultimo caracter
+    for index, dato in enumerate(lista_durante):
+        palabrasG = dato[:-2].split(":")
+        lista_durante_cam.append(palabrasG[0]+"\n")
+        
+    #Rescribe documento donde estan todas las cuentas
+    lista_editada = lista_antes + lista_durante_cam +lista_despues
+    with open('Almacenado_todos.txt', 'w') as fp:
+        for index, dato in enumerate(lista_editada):
+            fp.write(dato.strip()+'\n') 
+    
+    #Borra la cuenta de los reportes 
+    with open('todos_reportados.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if dato==nombre and datos[index+1]==apellido:
+                puntero = index
+            if index<puntero:
+                lista_antes_G.append(dato.strip() + "\n")
+            elif puntero<=index<=puntero+1:
+                lista_durante_G.append(dato.strip() + "\n")
+            else:
+                lista_despues_G.append(dato)
+            
+        lista_editada_G = lista_antes_G +lista_despues_G
+        with open('todos_reportados.txt', 'w') as fp:
+            for index, dato in enumerate(lista_editada_G):
+                fp.write(dato.strip()+'\n')
+    
+    #Busca el correo
+    with open('Almacenado_todos.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if dato.strip() == palabras[0] and datos[index+1].strip() == palabras[1]:
+                correo = datos[index+5]
+                print(correo)
+                
+    ##########Envia correo######################################
+    print(correo)
+    try:
+        destinatario = correo                               #Destinatario
+        asunto = "Recuperacion de su cuenta"   #Asunto del correo
+                        
+        #Creacion del mensaje
+        mensaje = MIMEMultipart()
+        mensaje["From"]     = remitente     #El correo que envia el mensaje
+        mensaje["To"]       = destinatario  #El correo a donde se envia el mensaje
+        mensaje["Subject"]  = asunto        #El asunto del correo
+                        
+        #Cuerpo del correo
+        cuerpo = "Su cuenta ha sido restablecida por el administrador, tenga mas cuidado, en caso de no recordar su password puede hacerlo con el boton 'Olvide mi password'"   #El cuerpo de mensaje
+        mensaje.attach(MIMEText(cuerpo, "plain"))       #El contenido del mensaje
+                        
+        #Iniciar sesion en servidor SMTP de gmail
+        server = smtplib.SMTP("smtp.gmail.com", 587)    #Especifica el Host y el puerto al cual conectar
+        server.starttls()                               #Hace la conecxion con el servidor SMPT y encripta la secion
+        server.login(remitente, password)               #Inisia secion en SMPT, con argumentos elusername y el password 
+                        
+        #Enviar mensaje
+        texto = mensaje.as_string()                                 #Pasa todo el mensaje como texto
+        server.sendmail(remitente, destinatario, texto)    #Envia el mensaje
+        server.quit()              #Termino la sesion SMPT 
+        time.sleep(4)              #Espera 5seg
+                        #return True
+    except:
+        smtplib.SMTPException
+                
+    
+#!Trabajar en esta funcion para desbloquear las cuentas 
+def desbloqueo_cuentas(frame_administracion, lienzo_desbloqueo):
+    """Esta funcion que tiene el control de desbloquear la cuenta"""
+    #Obtiene una lista con la identidad de las cuentas reportadas
+    lista_pre_identidad = []
+    lista_identidad = []
+    opiden = StringVar()
+    posiden = 0
+    with open('todos_reportados.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if index==posiden and dato.strip():
+                posiden+=2
+                lista_pre_identidad.append(dato.strip())
+                
+    if not lista_pre_identidad:
+        # Crea una etiqueta para indicar que no hay ningun reportado
+        nueva_password = Label(lienzo_desbloqueo, text="No hay cuentas bloqueadas: ")
+        nueva_password.pack()
+        lienzo_desbloqueo.create_window(50, 50, anchor = NW, window = nueva_password)
+    
+    else:
+        posiden = 0
+        print("Banderin 0")
+        with open('todos_reportados.txt', 'r') as fp:
+            datos = fp.readlines()
+            for index, dato in enumerate(datos):
+                if index==posiden:
+                    print(index)
+                    posiden+=2
+                    print(dato)
+                    print(datos[index+1])
+                    lista_identidad.append(dato.strip() + " " + datos[index+1])
+        print(lista_identidad)
+            
+        #Crear un menu desplegable para la eleccion de alumno a desbloquear
+        menu = OptionMenu(lienzo_desbloqueo, opiden, *lista_identidad)
+        menu.pack()
+        menu.place(x=160, y=80)
+        
+        #El boton que envia una accion para la logica del desbloqueo de cuentas
+        botonmostrar = Button(lienzo_desbloqueo, text="Desbloquear", command = lambda: accion_desbloqueo(opiden), width=8, height=4) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+        botonmostrar.place(x=0, y=135)
+        botonmostrar.lift()
+    
     
     
 def mostrar_password(entrada1, entrada2, boton):
@@ -498,9 +668,270 @@ def administracion_profesores(frame_administracion, lienzo_administrar_profesor)
     botonedita = Button(lienzo_administrar_profesor, text="editar", command  = lambda: editar_profesor(lienzo_administrar_profesor, frame_administracion), width=6, height=3) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
     botonedita.place(x=333, y=100)
     botonedita.lift()
+    
+def guardar_datos(lienzo_imagen, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal, spingbox_hora, cantidad_hora, var1, var2, var3, var4, var5, var6, imagen_perfil, ruta_archivo):
+    lienzo_imagen.destroy()
+    
+    #4)Crea el lienzo de administracion de profesores
+    lienzo_guarda = Canvas(frame_administracion, width = 450, height = 250, bg = "#900C3F")
+    lienzo_guarda.pack()
+    lienzo_guarda.place(x=453, y=418)
+    lienzo_guarda.create_text(225, 30, text="Guardando datos...", fill="white", font=("Arial", 20))
+    
+    
+    nombre_curso  = nombreC.get()
+    numero_cupo   = numCupo.get()
+    profesor      = opprof.get()
+    fecha_inicio  = dateInicio.get()
+    fecha_final   = dateFinal.get()
+    hora_inicio   = spingbox_hora.get()
+    cant_hora     = cantidad_hora.get()
+    
+    if(var1.get() == 1):
+        variable1 = "Lunes: si"
+    else:
+        variable1 = "Lunes: No" 
+        
+    if(var2.get() == 1):
+        variable2 = "Martes: si"
+    else:
+        variable2 = "Martes: No" 
+        
+    if(var3.get() == 1):
+        variable3 = "Miercoles: si"
+    else:
+        variable3 = "Miercoles: No" 
+        
+    if(var4.get() == 1):
+        variable4 = "Jueves: si"
+    else:
+        variable4 = "Jueves: No"
+        
+    if(var5.get() == 1):
+        variable5 = "Viernes: si"
+    else:
+        variable5 = "Viernes: No"  
+        
+    if(var6.get() == 1):
+        variable6 = "Sabado: si"
+    else:
+        variable6 = "Sabado: No" 
+    
+    imagen_c = Image.open(ruta_archivo)  # Reemplaza 'ruta_archivo' con la ruta real de tu archivo de imagen
+                    
+    # Convierte la imagen a bytes
+    with io.BytesIO() as output:
+        imagen_c.save(output, format='PNG')
+        imagen_bytes = output.getvalue()
+        datos_imagen_codificados = base64.b64encode(imagen_bytes).decode("utf-8")
+    
+    
+    nombre_del_titulo = nombre_curso + ".txt"
+    with open(nombre_del_titulo, 'a') as fp:
+        fp.write(nombre_curso.strip() + '\n')
+        fp.write(numero_cupo.strip() + '\n')
+        fp.write(profesor.strip() + '\n')
+        fp.write(fecha_inicio.strip() + '\n')
+        fp.write(fecha_final.strip() + '\n')
+        fp.write(cant_hora.strip() + '\n')
+        fp.write(variable1.strip() + '\n')
+        fp.write(variable2.strip() + '\n')
+        fp.write(variable3.strip() + '\n')
+        fp.write(variable4.strip() + '\n')
+        fp.write(variable5.strip() + '\n')
+        fp.write(variable6.strip() + '\n')
+        fp.write(datos_imagen_codificados.strip() + '\n')
+    
+        
+        
+        
+#!Aqui se escoje la imagen de fondo para el curso    
+def imagen_fondo(lienzo_horario, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal, spingbox_hora, cantidad_hora, var1, var2, var3, var4, var5, var6):
+    lienzo_horario.destroy()
+    
+    #4)Crea el lienzo de administracion de profesores
+    lienzo_imagen = Canvas(frame_administracion, width = 450, height = 250, bg = "#900C3F")
+    lienzo_imagen.pack()
+    lienzo_imagen.place(x=453, y=418)
+    lienzo_imagen.create_text(225, 30, text="Subir imagen...", fill="white", font=("Arial", 20))
 
-def nuevo_cursos():
-    pass
+    #Etiqueta para el guardado de la imagen del curso para el curso
+    
+    etiqueta_foto_de_perfil = Label(lienzo_imagen, text="Cargar foto de perfil")
+    etiqueta_foto_de_perfil.pack()
+    etiqueta_foto_de_perfil.place(x=200, y=100, anchor=NW)
+    
+    
+    #Imagen de perfil:
+    ruta_archivo = filedialog.askopenfilename(filetypes=[("Archivos de imagen", "*.png *.jpg *.jpeg *.gif *.bmp")])
+    imagen_perfil = PhotoImage(file=ruta_archivo)
+    etiqueta_foto_de_perfil.config(image=imagen_perfil)  # Esto puede estar causando el problema.
+    etiqueta_foto_de_perfil.image = imagen_perfil
+    
+    
+    #Boton de cerrar horario
+    botonguarda = Button(lienzo_imagen, text="Guardar", command = lambda: guardar_datos(lienzo_imagen, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal, spingbox_hora, cantidad_hora, var1, var2, var3, var4, var5, var6, imagen_perfil, ruta_archivo), width=8, height=3) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonguarda.place(x=395, y=195)
+    botonguarda.lift()
+    
+    
+    
+    
+def creacion_horario(lienzo_new_curso, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal):
+    #Destruccion del lienzo actual
+    lienzo_new_curso.destroy()
+    spingbox_hora  = StringVar()
+    cantidad_hora  = StringVar()
+    var1           = IntVar()
+    var2           = IntVar()
+    var3           = IntVar()
+    var4           = IntVar()
+    var5           = IntVar()
+    var6           = IntVar()
+    
+    #4)Crea el lienzo de administracion de profesores
+    lienzo_horario = Canvas(frame_administracion, width = 450, height = 250, bg = "#900C3F")
+    lienzo_horario.pack()
+    lienzo_horario.place(x=453, y=418)
+    lienzo_horario.create_text(225, 30, text="Creacion del horario del curso", fill="white", font=("Arial", 20))
+    
+    #Dias de clase
+    #Hora de inicio: 
+    etiqueta_hora_inicio = Label(lienzo_horario, text="Hora de inicio: ")
+    etiqueta_hora_inicio.pack()
+    lienzo_horario.create_window(100, 80, anchor = NW, window = etiqueta_hora_inicio)
+    
+    #Etiqueta de cantidad de horas: 
+    etiqueta_cant_horas = Label(lienzo_horario, text="Cantidad de horas: ")
+    etiqueta_cant_horas.pack()
+    lienzo_horario.create_window(100, 115, anchor = NW, window = etiqueta_cant_horas)
+    
+    #Spinbox de Hora de inicio
+    spinbox_hora_inicio = Spinbox(lienzo_horario, from_=0, to=50, values=("7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"), textvariable=spingbox_hora, wrap=True)
+    spinbox_hora_inicio.pack()
+    spinbox_hora_inicio.place(x=250, y=80)
+    
+    
+    #Campo de texto para la cantidad de horas
+    campo_cantidad = Entry(lienzo_horario, textvariable = cantidad_hora)
+    campo_cantidad.pack()
+    lienzo_horario.create_window(250, 115, anchor = NW, window = campo_cantidad)
+    
+    #Checkbox con los dias de la semana
+    c1 = Checkbutton(lienzo_horario, text='Lunes',     variable=var1, onvalue=1, offvalue=0)
+    c1.pack()
+    c1.place(x=10, y=150)
+    c2 = Checkbutton(lienzo_horario, text='Martes',    variable=var2, onvalue=1, offvalue=0)
+    c2.pack()
+    c2.place(x=90, y=150)
+    c3 = Checkbutton(lienzo_horario, text='Miercoles', variable=var3, onvalue=1, offvalue=0)
+    c3.pack()
+    c3.place(x=170, y=150)
+    c4 = Checkbutton(lienzo_horario, text='Jueves',    variable=var4, onvalue=1, offvalue=0)
+    c4.pack()
+    c4.place(x=10, y=200)
+    c5 = Checkbutton(lienzo_horario, text='Viernes',   variable=var5, onvalue=1, offvalue=0)
+    c5.pack()
+    c5.place(x=90, y=200)
+    c6 = Checkbutton(lienzo_horario, text='Sabado',    variable=var6, onvalue=1, offvalue=0)
+    c6.pack()
+    c6.place(x=170, y=200)
+    
+    
+    #Boton de cerrar horario
+    botonhorario = Button(lienzo_horario, text="Fondo", command = lambda: imagen_fondo(lienzo_horario, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal, spingbox_hora, cantidad_hora, var1, var2, var3, var4, var5, var6), width=5, height=3) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonhorario.place(x=400, y=190)
+    botonhorario.lift()
+    
+    
+#!Aqui vamos a trabajar lo nuevo
+def nuevos_cursos(frame_administracion, lienzo_newcurso):
+    """Esta funcion sirve para crear nuevos cursos recibe como parametro el frame de administracion
+    y el lienzo de nuevos cursos"""
+    
+    #El tamaño del lienzo es: 400x200
+    
+    
+    #Declaracion de variables StrinVar()
+    nombreC    = StringVar()
+    numCupo    = StringVar()
+    dateInicio = StringVar()
+    dateFinal  = StringVar()
+    opprof     = StringVar()
+    posnombre  = 0
+    posdpi     = 2
+    
+    lista_nomdpi_prof = []
+    
+    #Etiqueta del nombre del curso
+    etiqueta_nombrec = Label(lienzo_newcurso, text="nombre del curso: ")
+    etiqueta_nombrec.pack()
+    lienzo_newcurso.create_window(50, 45, anchor = NW, window = etiqueta_nombrec)
+    
+    #Etiqueta Cupo de estudiantes 
+    etiqueta_cupo = Label(lienzo_newcurso, text="numero de cupo: ")
+    etiqueta_cupo.pack()
+    lienzo_newcurso.create_window(50, 80, anchor = NW, window = etiqueta_cupo)
+    
+    #Etiqueta profesor: 
+    etiqueta_profesor = Label(lienzo_newcurso, text="profesor: ")
+    etiqueta_profesor.pack()
+    lienzo_newcurso.create_window(50, 115, anchor = NW, window = etiqueta_profesor)
+    
+    #Etiqueta fecha de inicio: 
+    etiqueta_inicio = Label(lienzo_newcurso, text="Fecha de inicio: ")
+    etiqueta_inicio.pack()
+    lienzo_newcurso.create_window(50, 150, anchor = NW, window = etiqueta_inicio)
+    
+    #Etiqueta fecha de finalizacion: 
+    etiqueta_final = Label(lienzo_newcurso, text="Fecha de fin: ")
+    etiqueta_final.pack()
+    lienzo_newcurso.create_window(50, 185, anchor = NW, window = etiqueta_final)    
+    
+    #Campo nombre de curso
+    campo_nombrec= Entry(lienzo_newcurso, textvariable = nombreC)
+    campo_nombrec.pack()
+    lienzo_newcurso.create_window(200, 45, anchor = NW, window = campo_nombrec)
+    
+    #Campo numero de cupo
+    campo_num_cupo = Entry(lienzo_newcurso, textvariable = numCupo)
+    campo_num_cupo.pack()
+    lienzo_newcurso.create_window(200, 80, anchor = NW, window = campo_num_cupo)
+    
+    #Devuelve una lista de los profesores disponibles
+    with open('todos_profesores.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            if index == posnombre:
+                posnombre += 4
+                nombre = dato.strip()
+            
+            if index == posdpi:
+                posdpi += 4
+                dpi = dato.strip()  
+                elemento = nombre + " " + dpi
+                lista_nomdpi_prof.append(elemento.strip())
+    
+    #Crea el menu opciones solo con los DPI        
+    menu = OptionMenu(lienzo_newcurso, opprof, *lista_nomdpi_prof)
+    menu.pack()
+    menu.place(x=225, y=115)
+    
+    #Campo Fecha de inicio
+    campo_fecha_inicio = Entry(lienzo_newcurso, textvariable = dateInicio)
+    campo_fecha_inicio.pack()
+    lienzo_newcurso.create_window(200, 150, anchor = NW, window = campo_fecha_inicio)
+    
+    #Campo fecha de finalizacion
+    campo_fecha_final = Entry(lienzo_newcurso, textvariable = dateFinal)
+    campo_fecha_final.pack()
+    lienzo_newcurso.create_window(200, 185, anchor = NW, window = campo_fecha_final)
+    
+    #Boton de cerrar horario
+    botonhorario = Button(lienzo_newcurso, text="horario", command = lambda: creacion_horario(lienzo_newcurso, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal), width=5, height=3) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonhorario.place(x=400, y=190)
+    botonhorario.lift()
+    
 
 def cerrar_usuario():
     sys.exit()
@@ -523,8 +954,8 @@ def principal(frame_regadmin, raiz, lienzo_panel, imagenadmin):
     #1)Crea el lienzo para bloqueo de cuentas
     lienzo_bloqueo_cuentas = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
     lienzo_bloqueo_cuentas.pack()
-    lienzo_bloqueo_cuentas.place(x=50, y=50)
-    lienzo_bloqueo_cuentas.create_text(200, 30, text="Bloquear cuentas", fill="white", font=("Arial", 18))
+    lienzo_bloqueo_cuentas.place(x=40, y=50)
+    lienzo_bloqueo_cuentas.create_text(200, 30, text="Desbloquear cuenta", fill="white", font=("Arial", 18))
 
     
     #2)Crea el lienzo para el cambio de contraseña
@@ -536,7 +967,7 @@ def principal(frame_regadmin, raiz, lienzo_panel, imagenadmin):
     #3)Crea el lienzo para el listado de notas
     lienzo_reporte_notas= Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
     lienzo_reporte_notas.pack()
-    lienzo_reporte_notas.place(x=50, y=284)
+    lienzo_reporte_notas.place(x=40, y=284)
     lienzo_reporte_notas.create_text(200, 30, text="Reportes de notas", fill="white", font=("Arial", 20))
     
     
@@ -548,10 +979,10 @@ def principal(frame_regadmin, raiz, lienzo_panel, imagenadmin):
     
     
     #5)Lienzo para nuevos cursos
-    lienzo_nuevo_curso = Canvas(frame_administracion, width = 400, height = 200, bg = "#900C3F")
+    lienzo_nuevo_curso = Canvas(frame_administracion, width = 445, height = 250, bg = "#900C3F")
     lienzo_nuevo_curso.pack()
-    lienzo_nuevo_curso.place(x=483, y=518)
-    lienzo_nuevo_curso.create_text(200, 30, text="Creacion de nuevos cursos", fill="white", font=("Arial", 20))
+    lienzo_nuevo_curso.place(x=453, y=418)
+    lienzo_nuevo_curso.create_text(225, 30, text="Creacion de nuevos cursos", fill="white", font=("Arial", 20))
     
     
     #Boton de cerrar cuenta
@@ -561,6 +992,8 @@ def principal(frame_regadmin, raiz, lienzo_panel, imagenadmin):
     
     cambio_password(frame_administracion, lienzo_password)
     administracion_profesores(frame_administracion, lienzo_administrar_profesor)
+    nuevos_cursos(frame_administracion, lienzo_nuevo_curso)
+    desbloqueo_cuentas(frame_administracion, lienzo_bloqueo_cuentas)
     
     
 

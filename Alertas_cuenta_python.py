@@ -13,7 +13,6 @@ def mensajes(frame_nueva_cuenta, lienzo_nueva_cuenta, lista_recibida, syntaxis_c
     """
     enviar_error = False
     error = False
-    print("Segundo banderin")
     for index, validez in enumerate(syntaxis_correcta):     #Si la lista con los valores True False tiene un False de error
         if validez == False:
             #Coloca la etiqueta

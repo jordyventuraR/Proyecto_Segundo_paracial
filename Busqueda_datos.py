@@ -12,38 +12,38 @@ def generacion_sublistas():
     lista_correo = []
     
     #Variables enteras
-    numeroNom = 1       #Posicion asociada al nombre
-    numeroApe = 2       #Posicion asociada al apellido
-    numeroDPI = 3       #Posicion DPI
-    numeroTel = 5       #Posicion del Telefono
-    numeroCorreo = 6    #Posicion del correo
+    numeroNom = 0       #Posicion asociada al nombre
+    numeroApe = 1       #Posicion asociada al apellido
+    numeroDPI = 2       #Posicion DPI
+    numeroTel = 4       #Posicion del Telefono
+    numeroCorreo = 5    #Posicion del correo
     
     with open('Almacenado_todos.txt', 'r') as fp:
         datos = fp.readlines()
         for index, dato in enumerate(datos):
             #Guarda el nombre en una lista
             if index == numeroNom:
-                numeroNom += 7
+                numeroNom += 8
                 lista_identidad.append(dato)
                 
             #Guarda el apellido en una lista    
             if index == numeroApe:
-                numeroApe += 7
+                numeroApe += 8
                 lista_identidad.append(dato)
                 
             #Guarda el numero de DPI en una lista
             if index == numeroDPI:
-                numeroDPI += 7
+                numeroDPI += 8
                 lista_DPI.append(dato)
             
             #Guarda el numero de telefono en una lista
             if index == numeroTel:
-                numeroTel += 7
+                numeroTel += 8
                 lista_telefonos.append(dato)
                 
             #Gurda el numero de correo en una lista
             if index == numeroCorreo:
-                numeroCorreo += 7
+                numeroCorreo += 8
                 lista_correo.append(dato)
                 lista_identidad.append(dato)
             

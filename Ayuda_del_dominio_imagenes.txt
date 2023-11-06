@@ -1,0 +1,66 @@
+
+from tkinter import ttk
+from tkinter import filedialog
+from PIL import Image
+import sys
+import time
+import base64
+import io
+
+
+
+#!Aqui se escoje la imagen de fondo para el curso    
+def imagen_fondo(lienzo_horario, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal, spingbox_hora, cantidad_hora, var1, var2, var3, var4, var5, var6):
+    lienzo_horario.destroy()
+    
+    #4)Crea el lienzo de administracion de profesores
+    lienzo_imagen = Canvas(frame_administracion, width = 450, height = 250, bg = "#900C3F")
+    lienzo_imagen.pack()
+    lienzo_imagen.place(x=453, y=418)
+    lienzo_imagen.create_text(225, 30, text="Subir imagen...", fill="white", font=("Arial", 20))
+
+    #Etiqueta para el guardado de la imagen del curso para el curso
+    
+    etiqueta_foto_de_perfil = Label(lienzo_imagen, text="Cargar foto de perfil")
+    etiqueta_foto_de_perfil.pack()
+    etiqueta_foto_de_perfil.place(x=200, y=100, anchor=NW)
+    
+    
+    #Imagen de perfil:
+    ruta_archivo = filedialog.askopenfilename(filetypes=[("Archivos de imagen", "*.png *.jpg *.jpeg *.gif *.bmp")])
+    imagen_perfil = PhotoImage(file=ruta_archivo)
+    etiqueta_foto_de_perfil.config(image=imagen_perfil)  # Esto puede estar causando el problema.
+    etiqueta_foto_de_perfil.image = imagen_perfil
+    
+    
+    #Boton de cerrar horario
+    botonguarda = Button(lienzo_imagen, text="Guardar", command = lambda: guardar_datos(lienzo_imagen, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal, spingbox_hora, cantidad_hora, var1, var2, var3, var4, var5, var6, imagen_perfil, ruta_archivo), width=8, height=3) #Entrega como parametro la lista de respuestas, el frame actual, la imagen de fondo y la raiz
+    botonguarda.place(x=395, y=195)
+    botonguarda.lift()
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+def guardar_datos(lienzo_imagen, frame_administracion, nombreC, numCupo, opprof, dateInicio, dateFinal, spingbox_hora, cantidad_hora, var1, var2, var3, var4, var5, var6, imagen_perfil, ruta_archivo):
+
+ # Convierte la imagen a bytes
+    with io.BytesIO() as output:
+        imagen_c.save(output, format='PNG')
+        imagen_bytes = output.getvalue()
+        datos_imagen_codificados = base64.b64encode(imagen_bytes).decode("utf-8")
+    
+    
+    nombre_del_titulo = nombre_curso + ".txt"
+    with open(nombre_del_titulo, 'a') as fp:
+        fp.write(nombre_curso.strip() + '\n')
+        fp.write(numero_cupo.strip() + '\n')
+        fp.write(profesor.strip() + '\n')
+        fp.write(fecha_inicio.strip() + '\n')
+        fp.write(fecha_final.strip() + '\n')
+        fp.write(cant_hora.strip() + '\n')
+        fp.write(variable1.strip() + '\n')
+        fp.write(variable2.strip() + '\n')
+        fp.write(variable3.strip() + '\n')
+        fp.write(variable4.strip() + '\n')
+        fp.write(variable5.strip() + '\n')
+        fp.write(variable6.strip() + '\n')
+        fp.write(datos_imagen_codificados.strip() + '\n')

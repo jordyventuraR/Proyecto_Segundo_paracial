@@ -34,7 +34,6 @@ def enviar_administracion(entrada1, entrada2, frame_administracion, raiz, imagen
         time.sleep(2)
         admin(raiz, frame_administracion, lienzo_cuenta_administracion,  imagen)
 
-
 def mostrar_password(entrada2, boton):
     """La funcion que pasa la contraseña visible a **** o de **** a visible"""
     #Si la contraseña no esta visible
@@ -45,7 +44,6 @@ def mostrar_password(entrada2, boton):
     else:
         entrada2.config(show='*')       #La oculta              
         boton.config(text='Mostrar')    #Cambia el texto del boton a mostrar
-    
         
 def admin(raiz, frame_administracion, lienzo_cuenta_administracion, imagen):
     """Esta funcion crear los campos para ingresar como administrador, recibe como registros:

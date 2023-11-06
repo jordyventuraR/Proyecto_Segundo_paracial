@@ -133,7 +133,8 @@ def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacio
         
 def boton_enviar_cuenta(casa, imagen, lienzo_nueva_cuenta, frame_nueva_cuenta, lista, raiz,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion):
     lista_de_recepcion = nueva_cuenta(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, imagen,  nombre, apellido, correo, username, dpi, telefono, fecha, password, confirmacion) #Obtiene el valor de lo que se escribio actualmente en los campos de textos
-    primera_validacion, syntaxis_correcta = recibir_datos_de_crear_cuenta(lista_de_recepcion, frame_nueva_cuenta, 400, 100, imagen)                 #Devuelve la lista con la syntaxis correcta de los datos que tiene los campos de texto        
+    primera_validacion, syntaxis_correcta = recibir_datos_de_crear_cuenta(lista_de_recepcion, frame_nueva_cuenta, 400, 100, imagen)                 #Devuelve la lista con la syntaxis correcta de los datos que tiene los campos de texto
+    
     enviar_error = mensajes(frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacion, syntaxis_correcta, 750,  100)                              #Devuelve los errores por pantalla
     #Si hay errores de syntaxis: 
     if enviar_error == True:
@@ -249,10 +250,6 @@ def regresar(raiz, frame_cuestionario):
     boton5.lift()
     boton6.lift()
     raiz.mainloop() 
-
-        
-        
-    
 
 
 #Presenta el cuestionario que sirve de cuestionario de admision

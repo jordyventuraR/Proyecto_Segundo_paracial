@@ -6,19 +6,157 @@ from email.mime.multipart  import MIMEMultipart
 import smtplib
 import time
 
+import alumnos_interfaz
+import profesor_interfaz
+import modulo_compartido
+
+remitente = "hogwartsesculademagia@gmail.com"   #Desde el correo que vamos a enviar el mensaje
+password = "wksg icol fqnd hvif" 
 
 
 # La clave
 clave_cifrado = b'd3iXJXBhYZ0ZasXWw_lIafJ3HyDHZoAmsD7ysmEbjtA='
 fernet = Fernet(clave_cifrado)
 
-
 intento = 0
 
+def notificar_bloqueo(nom, ape):
+    """Es la funcion que bloquea la cuenta tomando el nombre y el apellido
+    y le agrega una x y envia un correo para indicar que se va a bloquear la cuenta"""
 
-def reportar_cuenta(nombre, apellido):
-    #Guarda las cuentas que pueden ser bloqueadas
-    pass
+    """Buscar el nombre y el apellido en donde estan todos los reportados en caso de no estar en la lista 
+    retorna none y en caso de que si hace lo siguiente"""
+    nombre = nom + '\n'
+    apellido = ape + '\n'
+    print(nombre)
+    print(apellido)
+    with open('Almacenado_todos.txt', 'r') as fp:
+        datos = fp.readlines()
+        for index, dato in enumerate(datos):
+            print(datos[0])
+            print(datos[1])
+            print(datos[5])
+            if dato == nombre:
+                print("Banderin: 2")
+                print(datos[index+1])
+                print(apellido)
+                if apellido == datos[index+1]:
+                    print("Banderin: 3")
+                    #Apunta el nombre y el apellido en el documento llamado "Reporte de cuentas bloqueadas"
+                    with open('todos_reportados.txt', 'a') as fp:
+                        fp.write(nombre.strip()+'\n')
+                        fp.write(apellido.strip()+'\n')
+                    #Busca su correo electronico y envia una notificacion de que la cuenta ha sido bloqueada
+                    correo = datos[index+5]
+                    print("Correo: ")
+                    print(correo)
+                    
+                    
+                    ##########Envia correo######################################
+                    try:
+                        destinatario = correo                               #Destinatario
+                        asunto = "Bloqueo de su cuenta"   #Asunto del correo
+                        
+                        #Creacion del mensaje
+                        mensaje = MIMEMultipart()
+                        mensaje["From"]     = remitente     #El correo que envia el mensaje
+                        mensaje["To"]       = destinatario  #El correo a donde se envia el mensaje
+                        mensaje["Subject"]  = asunto        #El asunto del correo
+                        
+                        #Cuerpo del correo
+                        cuerpo = "Usted ha ingresado su nombre y apellido pero con un password incorrecto multiples ocaciones por lo que se le ha bloquedo su cuenta comuniquese con el administrador "   #El cuerpo de mensaje
+                        mensaje.attach(MIMEText(cuerpo, "plain"))       #El contenido del mensaje
+                        
+                        #Iniciar sesion en servidor SMTP de gmail
+                        server = smtplib.SMTP("smtp.gmail.com", 587)    #Especifica el Host y el puerto al cual conectar
+                        server.starttls()                               #Hace la conecxion con el servidor SMPT y encripta la secion
+                        server.login(remitente, password)               #Inisia secion en SMPT, con argumentos elusername y el password 
+                        
+                        #Enviar mensaje
+                        texto = mensaje.as_string()                                 #Pasa todo el mensaje como texto
+                        server.sendmail(remitente, destinatario, texto)    #Envia el mensaje
+                        server.quit()              #Termino la sesion SMPT 
+                        time.sleep(5)              #Espera 5seg
+                        #return True
+                    
+                    except:
+                        smtplib.SMTPException
+                        #return False
+                    ##########################Bloqueo#####################################
+                    #Busca en el documendo donde estan los alumnos el nombre y el apellido
+                    lista_antes       = []
+                    lista_durante     = []
+                    lista_durante_blo = []
+                    lista_despues     = []
+                    lista_unida       = []
+                    
+
+                    #guarda los datos que estan antes de ese estudiante
+                    with open('Almacenado_todos.txt', 'r') as fp:
+                        datos = fp.readlines()
+                        for index, dato in enumerate(datos):
+                            if dato == nombre:
+                                indice = index
+                                for index, dato in enumerate(datos):
+                                    if index < indice:
+                                        lista_antes.append(dato.strip() + '\n')
+                                    elif indice<=index<=indice+1:
+                                        lista_durante.append(dato.strip() + '\n')
+                                    else:
+                                        lista_despues.append(dato.strip() + '\n')
+                                #Remplaza el nombre y el apellido
+                                for index, dato in enumerate(lista_durante):
+                                    dato_sin_enter = dato.rstrip()  # Eliminar el salto de línea al final del dato
+                                    dato_procesado = dato_sin_enter + "X"  # Agregar la "X" al final del dato
+                                    lista_durante_blo.append(dato_procesado.strip() + '\n')
+                                    
+                                
+                                #Rescribe el documento de texto pero cambiando el nombre y el apellido por usernamex
+                                lista_unida = lista_antes + lista_durante_blo + lista_despues
+                                with open('Almacenado_todos.txt', 'w') as fp:
+                                    for dato in lista_unida:
+                                        fp.write(dato.strip() + '\n')
+                        else:
+                            return intento or 0
+
+
+def reportar_cuenta(nombre, apellido, intento):
+    """Guarda el nombre, el apellido y el intento en un documento y si el intento llega a 3
+    busca los datos donde estan todos los alumnos y le envia un correo perteneciente al nombre y
+    al apellido de su bloque y lo que hace es que altera el nombre de su nombre agregandole una x y en el panel
+    de administracion lo que  hace es que borra esa x"""
+    print(intento)
+    if(intento == 1):
+        #Aqui se crea el documento y se coloca el nombre y el apellido
+        with open('posibles_reportes.txt', 'w') as fp:
+            identidad = nombre.get() + apellido.get()
+            fp.write(identidad.strip()+'\n') 
+            return intento
+    elif(intento == 4):
+        #Aqui se verifica que el documento tenga el mismo nombre
+        # y apellido 3 veces si es asi lo guarda en el documento de reporte de cuentas
+        with open('posibles_reportes.txt', 'r') as fp:
+            datos = fp.readlines()
+            
+            if datos[0] == datos[1]:
+                if datos[1] == datos[2]:
+                    with open('Reporte_de_cuentas.txt', 'a') as fp:
+                        identidad = nombre.get() + apellido.get()
+                        fp.write(identidad.strip() + '\n')
+                    notificar_bloqueo(nombre.get(), apellido.get())
+                    return 0  
+                else:
+                    print("Ya fue evaluado")
+                    return 0      
+            else:
+                print("Ya fue evaluado")
+                return 0   
+    else:
+        #Aqui se crea el documento y se coloca el nombre y el apellido
+        with open('posibles_reportes.txt', 'a') as fp:
+            identidad = nombre.get() + apellido.get()
+            fp.write(identidad.strip() + '\n')  
+        return intento
 
 def enviar_correo(correo, clavepass):
     """Esta funcion es la que envia el correo con la contraseña que se ingreso en el registro de cuenta, recibe como parametro:
@@ -29,10 +167,6 @@ def enviar_correo(correo, clavepass):
     #Desencriptacion
     password_descifrado = fernet.decrypt(clavepass)
     password_descifrado_string = password_descifrado.decode('utf-8')
-    
-    #Correo
-    remitente = "hogwartsesculademagia@gmail.com"   #Desde el correo que vamos a enviar el mensaje
-    password = "wksg icol fqnd hvif"
     
     try:
         destinatario = correo                               #Destinatario
@@ -251,17 +385,32 @@ def comprobar(lista, nombre, apellido, password, n, palabra):
     else:
         print("False")
         return False
+    
 
-def entrada(lienzo_estudiante, lienzo_profesor, lienzo_general, color, nombre):
+
+def entrada(lienzo_estudiante, lienzo_profesor, lienzo_general, color, nombre, profesor_ver, alumno_ver):
+    print("Variable del profesor: ")
+    print(profesor_ver)
+    print("Varible del alumno: ")
+    print(alumno_ver)
+
     lienzo_estudiante.destroy()
     lienzo_profesor.destroy()
+    lienzo_interfaz = Canvas(lienzo_general, width=1408, height=708, bg=color)
+    lienzo_interfaz.pack()
+    lienzo_interfaz.place(x=60, y=40)
+
     nombre_ingreso = nombre.get()
-    lienzo_de_entrada = Canvas(lienzo_general, width = 600, height = 600, bg = color)
-    lienzo_de_entrada.pack()
-    lienzo_de_entrada.place(x=383, y=84)
-    lienzo_de_entrada.create_text(342, 90, text = "Bienvenido", fill="white", font=("Arial", 16))
-    lienzo_de_entrada.create_text(342, 300, text = nombre_ingreso, fill="white", font=("Arial", 18))
-    
+    modulo_compartido.nombre_ingreso = nombre_ingreso
+
+    if alumno_ver == True:
+        # Aquí se llama a la función que contiene todo el código de alumnos
+        modulo_compartido.funcion_alumnos(lienzo_interfaz, color)
+    elif profesor_ver == True:
+        # Aquí se llama a la función que contiene todo el código de profesor
+        modulo_compartido.funcion_profesor(lienzo_interfaz, color)
+    else:
+        print("Error en el inicio de sesión")
 
 def divide_listas_profesor(lienzo_general, lienzo_estudiante,  lienzo_profesor, color, nombre, apellido, password):
     """Esta funcion toma el archivo donde estan todos  los estudiantes y lo va subdividiendo en listas
@@ -296,18 +445,17 @@ def divide_listas_profesor(lienzo_general, lienzo_estudiante,  lienzo_profesor, 
                 
     
     if comprobar(lista_identidad, nombre, apellido, password, 2, "Profesor")==True:
-        entrada(lienzo_estudiante, lienzo_profesor, lienzo_general, color, nombre)
+        profesor_ver = True
+        alumno_ver = False
+        entrada(lienzo_estudiante, lienzo_profesor, lienzo_general, color, nombre, profesor_ver, alumno_ver)
         print("El profesor entro a su portal")
+    #Todo: Reporte
     else:
         intento += 1
-        if intento == 3:
-            #Aqui se van a guardar las cuentas que hay que bloquear
-            print("Al profesor se le va bloquear su cuenta")
-            reportar_cuenta(nombre, apellido)
-            roles(lienzo_general, color)
-        else:
-            roles(lienzo_general, color)
-
+        intento = reportar_cuenta(nombre, apellido, intento)
+        print("Lo que devuelve")
+        print(intento)
+        roles(lienzo_general, color)
 
 def divide_listas_estudiante(lienzo_general, lienzo_profesor, lienzo_estudiante, color, nombre, apellido, password):
     """Esta funcion toma el archivo donde estan todos  los estudiantes y lo va subdividiendo en listas
@@ -345,21 +493,18 @@ def divide_listas_estudiante(lienzo_general, lienzo_profesor, lienzo_estudiante,
                 posicionpassword += 7
                 lista_identidad.append(dato)
                 
-    
-    
     if comprobar(lista_identidad, nombre, apellido, password, 3, "estudiante")==True:
-        entrada(lienzo_estudiante, lienzo_profesor, lienzo_general, color, nombre)
+        alumno_ver   = True
+        profesor_ver = False
+        entrada(lienzo_estudiante, lienzo_profesor, lienzo_general, color, nombre, profesor_ver, alumno_ver)
         print("El estudiante entro a su clase ")
     else:
         intento += 1
-        if intento == 3:
-            #Aqui se van a guardar las cuentas que hay que bloquear
-            print("Al estudiante se le va reportar su cuenta")
-            reportar_cuenta(nombre, apellido)
-            
-            roles(lienzo_general, color)
-        else:
-            roles(lienzo_general, color)
+        intento = reportar_cuenta(nombre, apellido, intento)
+        print("Lo que devuelve")
+        print(intento)
+        roles(lienzo_general, color)
+        
 
 
 def roles(lienzo_general, color):
