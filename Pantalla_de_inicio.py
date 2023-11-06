@@ -12,7 +12,8 @@ from Enviar_correo import confirmacion_new, correo_adv                          
 from guardaencripta_individual import  guardado_estudiante                          #Libreria que guarda en un documento la informacion de un estudiante y encripta su contraseña
 from cuenta_administracion import admin                                             #Libreria que crea la administracion
 from panel_administrativo import principal                                          #Libreria que desarrolla el panel principal de administracion  
-from select_roles import roles                                                      #Libreria que maneja el ingreso de profesores y estudiantes                                                                         
+from select_roles import roles                                                      #Libreria que maneja el ingreso de profesores y estudiantes  
+from Reconocimiento_facial import captura_rostros                                                                       
 from Busqueda_datos import*                                                         #Libreria que busca que ciertos datos sean unicos
 import time
 import sys
@@ -91,6 +92,9 @@ def validacion2(casa, frame_nueva_cuenta, lienzo_nueva_cuenta, primera_validacio
                         envio_correo = confirmacion_new(primera_validacion[5], primera_validacion[0], casa)
                         if envio_correo == True:                       #Si el correo fue enviado correctamente
                             guardado_estudiante(primera_validacion)
+                            
+                            captura_rostros(primera_validacion)
+                            
                             #Muestra un boton que envia a la aceptacion
                             lienzo_nueva_cuenta.destroy()
                             #Crea el lienzo con la imagen de fondo
